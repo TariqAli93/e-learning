@@ -16,8 +16,13 @@ $background: #2C313A;
 
 .theme--dark.v-application {
   background: $primary !important;
-  color: #E4E0E7;
+  color: $text !important;
   font-family: 'Cairo', sans-serif;
+}
+
+.theme--dark.v-picker__body {
+  background: $primary !important;
+  color: $text !important;
 }
 
 .theme--dark.v-list {

@@ -1,10 +1,109 @@
 <template>
   <div id="CoursesPage">
+    <div class="courses__filter mb-10">
+      <v-card class="shadow-1 radius-1 secondary pa-5">
+        <div class="d-flex">
+          <h4>فرز الكورسات</h4>
+          <v-spacer></v-spacer>
+          <h4>نتائج البحث: {{ courses.length }}</h4>
+        </div>
+        <v-divider class="mt-5 mb-5"></v-divider>
+        <v-row>
+          <v-col cols="12" xs="12" sm="12" md="12" lg="3" xl="3">
+            <v-menu
+              ref="datesMenuRef"
+              v-model="datesMenu"
+              transition="scale-transition"
+              offset-y
+              left
+              max-width="290px"
+              min-width="auto"
+              :close-on-content-click="false"
+            >
+              <template #activator="{ on, attrs }">
+                <v-text-field
+                  v-model="dateRangeText"
+                  label="التاريخ (من و الى)"
+                  readonly
+                  outlined
+                  color="text"
+                  dark
+                  v-bind="attrs"
+                  dense
+                  hide-details
+                  clearable
+                  v-on="on"
+                >
+                </v-text-field>
+              </template>
+
+              <v-card color="white" elevation="0">
+                <v-date-picker
+                  v-model="dates"
+                  range
+                  color="secondary"
+                  light
+                  header-color="secondary"
+                  @change="SaveDate"
+                ></v-date-picker>
+              </v-card>
+            </v-menu>
+          </v-col>
+
+          <v-col cols="12" xs="12" sm="12" md="12" lg="3" xl="3">
+            <v-select
+              v-model="subject"
+              :items="[{ text: 'subject', value: 'subject' }]"
+              color="text"
+              outlined
+              dense
+              label="المادة"
+              hide-details
+            ></v-select>
+          </v-col>
+
+          <v-col cols="12" xs="12" sm="12" md="12" lg="3" xl="3">
+            <v-select
+              v-model="filterTeachers"
+              :items="[{ text: 'Teacher', value: 'Teacher' }]"
+              color="text"
+              outlined
+              dense
+              label="المدرس"
+              hide-details
+            ></v-select>
+          </v-col>
+
+          <v-col cols="12" xs="12" sm="12" md="12" lg="3" xl="3">
+            <v-btn
+              color="text"
+              width="45%"
+              light
+              depressed
+              @click="FilterTheCourses"
+            >
+              تطبيق الفرز
+            </v-btn>
+
+            <v-btn
+              color="warning"
+              class="primary--text w-50"
+              width="45%"
+              depressed
+              @click.stop="GetCourses"
+            >
+              اعادة الضبط
+            </v-btn>
+          </v-col>
+        </v-row>
+      </v-card>
+    </div>
     <!-- course table -->
     <v-data-table
       :headers="headers"
       :items.sync="courses"
       :items-per-page="15"
+      item-key="courseId"
       class="shadow-1 radius-1 pa-5 secondary courses__table"
       :search="search"
     >
@@ -29,8 +128,8 @@
                 <v-btn
                   icon
                   color="text"
-                  class="mr-10"
                   v-bind="attrs"
+                  class="mr-10"
                   v-on="on"
                   @click="$router.push('/courses/add')"
                 >
@@ -66,16 +165,26 @@
           <v-icon>mdi-eye</v-icon>
         </v-btn>
       </template>
+
+      <template #[`item.createdAt`]="{ item }">
+        {{ FormateDate(item.createdAt) }}
+      </template>
     </v-data-table>
     <!-- course table -->
   </div>
 </template>
 
 <script>
+// eslint-disable-next-line no-unused-vars
+import moment from 'moment'
 export default {
   data() {
     return {
       search: '',
+      dates: [],
+      datesMenu: false,
+      subject: '',
+      filterTeachers: '',
       headers: [
         {
           text: 'الصورة',
@@ -85,9 +194,11 @@ export default {
         },
         { text: 'المعرف', align: 'start', value: 'courseId' },
         { text: 'اسم الكورس', value: 'courseName', sortable: false },
+        { text: 'المادة', value: 'courseSubject', sortable: false },
         { text: 'المدرس', value: 'teacher', sortable: false },
         { text: 'عدد الطلاب', value: 'students.length' },
         { text: 'عدد الفيديوات', value: 'videos.length' },
+        { text: 'سعر الكورس', value: 'price' },
         { text: 'التاريخ', value: 'createdAt' },
         { text: 'الاجرائات', value: 'actions', sortable: false },
       ],
@@ -96,20 +207,54 @@ export default {
     }
   },
 
+  computed: {
+    dateRangeText() {
+      return this.dates.join(' ~ ')
+    },
+  },
+
   mounted() {
-    this.$axios
-      .get('courses')
-      .then((res) => {
-        this.courses = res.data
-      })
-      .catch((err) => {
-        console.log(err)
-      })
+    this.GetCourses()
   },
 
   methods: {
+    GetCourses() {
+      this.$axios
+        .get('courses')
+        .then((res) => {
+          this.courses = res.data
+          console.log(res.data)
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+    },
+
     OpenCourse(item) {
       this.$router.push({ path: `/courses/${item.courseId}/` })
+    },
+
+    SaveDate(date) {
+      this.$refs.datesMenuRef.save(date)
+    },
+
+    FilterTheCourses() {
+      if (!!this.dateRangeText && this.dateRangeText.length > 0) {
+        const dates = this.dateRangeText.split('~')
+        const from = dates[0]
+        const to = dates[1]
+
+        const filterd = this.courses.filter((course) => {
+          const courseDate = moment(course.createdAt).format('DD-MM-YYYY')
+          return moment(courseDate).isBetween(from, to)
+        })
+
+        this.courses = filterd
+      }
+    },
+
+    FormateDate(date) {
+      return moment(date).format('DD-MM-YYYY')
     },
   },
 }
