@@ -1,21 +1,6 @@
 <template>
   <div class="AddNewCoursePage">
-    <v-breadcrumbs :items="breadcrumbs" class="text--text">
-      <template #divider>
-        <v-icon>mdi-arrow-left</v-icon>
-      </template>
-      <template #item="{ item }">
-        <v-breadcrumbs-item
-          :class="item.bgColor"
-          :href="item.href"
-          :disabled="item.disabled"
-        >
-          <span :class="item.color">
-            {{ item.text }}
-          </span>
-        </v-breadcrumbs-item>
-      </template>
-    </v-breadcrumbs>
+    <Breadcrumbs :items="breadcrumbs" />
 
     <v-card class="shadow-1 radius-1 pa-5 secondary">
       <v-toolbar flat color="primary" class="shadow-1 radius-1 mb-5">
@@ -143,9 +128,10 @@ export default {
       courseDescriptionField: '',
       courseImageField: [],
 
-      previewImageUrl: '',
-
       rules: [(v) => !!v || 'لا يمكن ترك الحقل فارغ'],
+
+
+
       breadcrumbs: [
         {
           text: 'الكورسات',
@@ -166,16 +152,6 @@ export default {
   },
 
   methods: {
-    previewImage(event) {
-      const output = event
-
-      if (output === undefined || output === '' || output === null) {
-        return
-      }
-      const url = URL.createObjectURL(output)
-      this.previewImageUrl = url
-    },
-
     addNewCourse() {
       const formFields = {
         courseName: this.courseNameField,

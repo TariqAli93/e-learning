@@ -9,15 +9,15 @@
 
     <div class="login__page">
       <v-card
-        color="transparent"
-        class="pa-15 custome__card shadow-1"
-        elevation="0"
+        color="primary"
+        class="rounded-1 shadow-1 mt-10 pa-5"
         width="500px"
       >
         <img src="~/static/vuetify-logo.svg" />
         <v-form
           ref="LoginForm"
           v-model="loginForm"
+          class="pa-5"
           lazy-validation
           @submit.prevent="login"
         >
@@ -57,13 +57,6 @@
         </v-form>
       </v-card>
     </div>
-
-    <svg class="svg2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
-      <path
-        fill-opacity="1"
-        d="M0,288L26.7,277.3C53.3,267,107,245,160,208C213.3,171,267,117,320,101.3C373.3,85,427,107,480,101.3C533.3,96,587,64,640,48C693.3,32,747,32,800,58.7C853.3,85,907,139,960,138.7C1013.3,139,1067,85,1120,96C1173.3,107,1227,181,1280,213.3C1333.3,245,1387,235,1413,229.3L1440,224L1440,0L1413.3,0C1386.7,0,1333,0,1280,0C1226.7,0,1173,0,1120,0C1066.7,0,1013,0,960,0C906.7,0,853,0,800,0C746.7,0,693,0,640,0C586.7,0,533,0,480,0C426.7,0,373,0,320,0C266.7,0,213,0,160,0C106.7,0,53,0,27,0L0,0Z"
-      ></path>
-    </svg>
   </v-app>
 </template>
 
@@ -81,9 +74,46 @@ export default {
   },
 
   methods: {
+    parseJwt(token) {
+      const base64Url = token.split('.')[1]
+      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/')
+      const jsonPayload = decodeURIComponent(
+        atob(base64)
+          .split('')
+          .map(function (c) {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
+          })
+          .join('')
+      )
+
+      return JSON.parse(jsonPayload)
+    },
+
     login() {
       if (this.$refs.LoginForm.validate()) {
-        console.log(true)
+        this.$store
+          .dispatch('login', {
+            phone: this.username,
+            password: this.password,
+          })
+          .then((result) => {
+            const decoded = this.parseJwt(result)
+            const user = {
+              id: decoded.idUser,
+              username: decoded.userName,
+              phone: decoded.phone,
+              role_name: decoded.role.roleName,
+              role_id: decoded.role.idRole,
+              province_name: decoded.province.provinceName,
+              province_id: decoded.province.idProvince,
+            }
+
+            localStorage.setItem('user', JSON.stringify(user))
+            localStorage.setItem('token', result)
+          })
+          .catch((error) => {
+            console.log(error)
+          })
       }
     },
   },
@@ -119,42 +149,10 @@ svg {
   position: absolute;
   width: 100%;
   z-index: 1001;
-
-  &.svg1 {
-    top: 0;
-    right: 0;
-  }
-
-  &.svg2 {
-    bottom: 0;
-    right: 0;
-    transform: rotateY(360deg) rotateX(180deg) !important;
-  }
+  opacity: 0.5;
 
   path {
     fill: $primary;
-  }
-}
-
-.custome__card {
-  position: relative;
-
-  &:before {
-    content: '';
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    top: 60%;
-    left: 0;
-    right: 0;
-    margin: 0 auto;
-    transform: translateY(-50%) scale(1.5);
-    background: {
-      image: url('~/static/custome__login__svg.svg');
-      size: 100%;
-      position: center center;
-      repeat: no-repeat;
-    }
   }
 }
 </style>
