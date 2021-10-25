@@ -89,31 +89,47 @@ export default {
       return JSON.parse(jsonPayload)
     },
 
-    login() {
+    async login() {
       if (this.$refs.LoginForm.validate()) {
-        this.$store
-          .dispatch('login', {
+        // 784356
+        this.$toast.show('جاري تسجيل الدخول', {
+          duration: 3000,
+          position: 'top-center',
+        })
+
+        try {
+          const token = await this.$store.dispatch('login', {
             phone: this.username,
             password: this.password,
           })
-          .then((result) => {
-            const decoded = this.parseJwt(result)
-            const user = {
-              id: decoded.idUser,
-              username: decoded.userName,
-              phone: decoded.phone,
-              role_name: decoded.role.roleName,
-              role_id: decoded.role.idRole,
-              province_name: decoded.province.provinceName,
-              province_id: decoded.province.idProvince,
-            }
 
-            localStorage.setItem('user', JSON.stringify(user))
-            localStorage.setItem('token', result)
+          const decoded = this.parseJwt(token)
+
+          const user = {
+            id: decoded.idUser,
+            username: decoded.userName,
+            phone: decoded.phone,
+            role_name: decoded.role.roleName,
+            role_id: decoded.role.idRole,
+            province_name: decoded.province.provinceName,
+            province_id: decoded.province.idProvince,
+          }
+
+          localStorage.setItem('user', JSON.stringify(user))
+          localStorage.setItem('token', token)
+
+          this.$toast.success('تم تسجيل الدخول', {
+            duration: 3000,
+            position: 'top-center'
           })
-          .catch((error) => {
-            console.log(error)
+        } catch (e) {
+          this.$toast.error('خطأ في تسجيل الدخول', {
+            duration: 3000,
+            position: 'top-center'
           })
+
+          console.log(e.response.data.errorMessage)
+        }
       }
     },
   },

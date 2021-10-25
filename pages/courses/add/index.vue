@@ -8,7 +8,13 @@
         <v-spacer></v-spacer>
         <v-tooltip bottom transition="slide-y-transition" color="text">
           <template #activator="{ on, attrs }">
-            <v-btn icon color="text" v-bind="attrs" v-on="on" @click="$router.push('/courses')">
+            <v-btn
+              icon
+              color="text"
+              v-bind="attrs"
+              v-on="on"
+              @click="$router.push('/courses')"
+            >
               <v-icon>mdi-arrow-left</v-icon>
             </v-btn>
           </template>
@@ -18,86 +24,117 @@
       </v-toolbar>
 
       <div>
-        <v-form ref="newCourseForm" v-model="newCourseForm" lazy-validation>
+        <v-form
+          ref="newCourseForm"
+          v-model="newCourseForm"
+          lazy-validation
+          @submit.prevent="createCourse"
+        >
           <v-row>
-            <v-col cols="12" sm="12" md="12" lg="3" xl="3">
+            <v-col cols="12" sm="12" md="3" lg="3" xl="3">
               <v-text-field
-                v-model="courseNameField"
-                label="اسم الكورس"
-                :rules="rules"
-                outlined
-                dense
+                name="courseTitle"
+                background-color="secondary"
                 color="text"
+                outlined
+                label="عنوان الكورس"
+                :rules="rules"
               ></v-text-field>
             </v-col>
 
-            <v-col cols="12" sm="12" md="12" lg="3" xl="3">
-              <v-select
-                v-model="courseCategoryField"
-                label="تصنيف الكورس"
-                :rules="rules"
-                outlined
-                dense
-                color="text"
-                :items="[{ text: 'رياضيات', value: 'Math' }]"
-                item-color="text"
-                menu-props="{auto: true}"
-              ></v-select>
-            </v-col>
-
-            <v-col cols="12" sm="12" md="12" lg="3" xl="3">
-              <v-select
-                v-model="courseTeacherField"
-                label="المدرس"
-                :rules="rules"
-                outlined
-                dense
-                color="text"
-                :items="[{ text: 'خضير بتيتة', value: 1 }]"
-                item-color="text"
-              ></v-select>
-            </v-col>
-
-            <v-col cols="12" sm="12" md="12" lg="3" xl="3">
+            <v-col cols="12" sm="12" md="3" lg="3" xl="3">
               <v-text-field
-                v-model="coursePriceField"
+                name="coursePrice"
+                background-color="secondary"
+                color="text"
+                outlined
                 label="سعر الكورس"
                 :rules="rules"
-                outlined
-                dense
                 type="number"
-                color="text"
               ></v-text-field>
             </v-col>
 
-            <v-col cols="12" sm="12" md="12" lg="12" xl="12">
-              <v-file-input
-                v-model="courseImageField"
-                label="صورة الكورس"
-                :rules="rules"
-                outlined
-                dense
-                type="file"
+            <v-col cols="12" sm="12" md="3" lg="3" xl="3">
+              <v-select
+                name="courseClass"
+                background-color="secondary"
                 color="text"
-                @change="previewImage($event)"
+                outlined
+                label="الصف"
+                :items="classes"
+                item-text="className"
+                item-value="idClass"
+                :rules="rules"
+                item-color="text"
+                return-object
+                @change="getSubjects"
+              ></v-select>
+            </v-col>
+
+            <v-col cols="12" sm="12" md="3" lg="3" xl="3">
+              <v-select
+                name="courseSubject"
+                background-color="secondary"
+                color="text"
+                outlined
+                label="المادة"
+                :rules="rules"
+                :disabled="!isClassSelected"
+                :items="subjects"
+                item-text="subjectName"
+                item-value="idSubject"
+                item-color="text"
+              ></v-select>
+            </v-col>
+
+            <v-col cols="12" sm="12" md="4" lg="4" xl="4">
+              <v-select
+                name="courseCreator"
+                background-color="secondary"
+                color="text"
+                outlined
+                label="المدرس"
+                :rules="rules"
+                :items="teachers"
+                item-text="userName"
+                item-value="roleId"
+              ></v-select>
+            </v-col>
+
+            <v-col cols="12" sm="12" md="4" lg="4" xl="4">
+              <v-text-field
+                name="coursePlatformPrice"
+                background-color="secondary"
+                color="text"
+                outlined
+                label="سعر المنصة"
+                :rules="rules"
+                type="number"
+              ></v-text-field>
+            </v-col>
+
+            <v-col cols="12" sm="3" md="4" lg="4" xl="4">
+              <v-file-input
+                background-color="secondary"
+                name="courseImage"
+                color="text"
+                outlined
+                label="الصورة"
+                :rules="rules"
+                prepend-icon="mdi-image"
+                @change="saveImage"
               ></v-file-input>
             </v-col>
 
             <v-col cols="12" sm="12" md="12" lg="12" xl="12">
-              <wysiwyg
-                v-model="courseDescriptionField"
-                placeholder="وصف الكورس"
+              <v-textarea
+                name="courseDescription"
+                background-color="secondary"
+                color="text"
+                outlined
+                label="وصف الكورس"
                 :rules="rules"
-                class="
-                  shadow-1
-                  radius-1
-                  primary
-                  text
-                  primary--text
-                  custom__wysiwyg
-                  mb-10
-                "
-              />
+              ></v-textarea>
             </v-col>
           </v-row>
 
@@ -106,7 +143,7 @@
             color="success"
             class="primary--text"
             :disabled="!newCourseForm"
-            @click.prevent="addNewCourse"
+            type="submit"
           >
             حفظ الكورس
           </v-btn>
@@ -121,16 +158,8 @@ export default {
   data() {
     return {
       newCourseForm: false,
-      courseNameField: '',
-      courseCategoryField: '',
-      courseTeacherField: '',
-      coursePriceField: '',
-      courseDescriptionField: '',
-      courseImageField: [],
-
-      rules: [(v) => !!v || 'لا يمكن ترك الحقل فارغ'],
-
-
+      isClassSelected: false,
+      tempImage: null,
 
       breadcrumbs: [
         {
@@ -148,21 +177,77 @@ export default {
           bgColor: 'transparent',
         },
       ],
+
+      rules: [(v) => !!v || 'لا يمكن ترك الحقل فارغ'],
+
+      teachers: [],
+      classes: [],
+      subjects: [],
+      classId: null,
     }
   },
 
-  methods: {
-    addNewCourse() {
-      const formFields = {
-        courseName: this.courseNameField,
-        courseTeacher: this.courseTeacherField,
-        courseCategory: this.courseCategoryField,
-        coursePrice: this.coursePriceField,
-        courseDescription: this.courseDescriptionField,
-      }
+  mounted() {
+    this.getClasses()
+    this.getTechers()
+  },
 
+  methods: {
+    getClasses() {
+      this.$axios
+        .get(`classes`)
+        .then((c) => {
+          this.classes = c.data
+        })
+        .catch((error) => {
+          console.log(error)
+        })
+    },
+
+    getSubjects(item) {
+      this.isClassSelected = true
+      this.subjects = item.Subject
+      this.classId = item.idClass
+    },
+
+    getTechers() {
+      this.$axios
+        .get('userRoles/3')
+        .then((user) => {
+          this.teachers = user.data
+        })
+        .catch((error) => {
+          console.log(error)
+        })
+    },
+
+    saveImage(event) {
+      this.tempImage = event
+    },
+
+    createCourse(event) {
+      let course = {}
       if (this.$refs.newCourseForm.validate()) {
-        console.log(formFields)
+        course = {
+          ...Object.fromEntries(new FormData(event.target)),
+          courseClass: this.classId,
+          courseImage: '',
+        }
+
+        const form = new FormData()
+        form.append('attachment', this.tempImage)
+
+        console.log(form);
+
+        this.$axios
+          .post('upload', form)
+          .then((path) => {
+            console.log(path)
+            console.log(course)
+          })
+          .catch((error) => {
+            console.log(error.response)
+          })
       }
     },
   },
