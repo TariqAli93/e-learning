@@ -1,15 +1,8 @@
 <template>
   <div class="course-page">
     <v-data-table
-      headers="headers"
-      items="items"
-      hide-actions
-      class="elevation-1"
-      select-all
-      pagination.sync="pagination"
-      item-key="id"
-      loading="true"
-      search="search"
+      :headers="headers"
+      :items="videos"
     >
       <template #top>
         <v-toolbar flat color="primary" class="shadow-1 radius-1">
@@ -108,6 +101,7 @@
 export default {
   data() {
     return {
+      headers: [],
       videos: [],
     }
   },
