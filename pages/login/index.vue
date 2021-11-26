@@ -66,15 +66,15 @@ export default {
   data() {
     return {
       loginForm: false,
-      username: '',
-      password: '',
+      username: '784356',
+      password: '123',
       showPassword: false,
       rules: [(v) => !!v || 'لا يمكن ترك الحقل فارغ'],
     }
   },
 
   methods: {
-    parseJwt(token) {
+    parseToken(token) {
       const base64Url = token.split('.')[1]
       const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/')
       const jsonPayload = decodeURIComponent(
@@ -92,41 +92,35 @@ export default {
     async login() {
       if (this.$refs.LoginForm.validate()) {
         // 784356
-        this.$toast.show('جاري تسجيل الدخول', {
-          duration: 3000,
+        const showMessage = this.$toast.show('جاري تسجيل الدخول...', {
           position: 'top-center',
         })
 
         try {
-          const token = await this.$store.dispatch('login', {
-            phone: this.username,
-            password: this.password,
+          const user = await this.$auth.loginWith('local', {
+            data: {
+              phone: this.username,
+              password: this.password
+            },
           })
 
-          const decoded = this.parseJwt(token)
+          this.$auth.setUser(this.parseToken(user.data.token))
+          this.$auth.strategy.token.set(user.data.token)
+          this.$auth.$storage.setUniversal('user',this.parseToken(user.data.token))
 
-          const user = {
-            id: decoded.idUser,
-            username: decoded.userName,
-            phone: decoded.phone,
-            role_name: decoded.role.roleName,
-            role_id: decoded.role.idRole,
-            province_name: decoded.province.provinceName,
-            province_id: decoded.province.idProvince,
-          }
-
-          localStorage.setItem('user', JSON.stringify(user))
-          localStorage.setItem('token', token)
+          showMessage.goAway()
 
           this.$toast.success('تم تسجيل الدخول', {
             duration: 3000,
-            position: 'top-center'
+            position: 'top-center',
           })
         } catch (e) {
           this.$toast.error('خطأ في تسجيل الدخول', {
             duration: 3000,
-            position: 'top-center'
+            position: 'top-center',
           })
+
+          showMessage.goAway()
 
           console.log(e.response.data.errorMessage)
         }

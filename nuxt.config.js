@@ -1,5 +1,4 @@
 export default {
-  // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
     titleTemplate: '%s - e-learning',
     title: 'e-learning',
@@ -14,47 +13,69 @@ export default {
     ],
     link: [
       { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
-      { rel: 'preconnect', href: 'https://fonts.googleapis.com'}
+      { rel: 'preconnect', href: 'https://fonts.googleapis.com' }
     ]
   },
 
-  // Global CSS: https://go.nuxtjs.dev/config-css
   css: [
     '@/assets/custom-icons.css',
     'vue-wysiwyg/dist/vueWysiwyg.css'
   ],
 
-  // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
+  router: {
+    middleware: ['auth']
+  },
+
   plugins: [
     '~/plugins/VueWysiwyg.js'
   ],
 
-  // Auto import components: https://go.nuxtjs.dev/config-components
   components: true,
+
   loading: { color: '#fff', throttle: 0, rtl: true },
 
-  // Modules for dev and build (recommended): https://go.nuxtjs.dev/config-modules
   buildModules: [
-    // https://go.nuxtjs.dev/eslint
     '@nuxtjs/eslint-module',
-    // https://go.nuxtjs.dev/vuetify
     '@nuxtjs/vuetify',
   ],
 
-  // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
-    // https://go.nuxtjs.dev/axios
     '@nuxtjs/axios',
     '@nuxtjs/toast',
+    '@nuxtjs/auth-next'
   ],
 
-  // Axios module configuration: https://go.nuxtjs.dev/config-axios
+  auth: {
+    redirect: {
+      login: '/login',
+      logout: '/login',
+      callback: '/login',
+      home: '/'
+    },
+    strategies: {
+      local: {
+        token: {
+          property: 'token',
+          global: true,
+          required: true,
+          type: 'Bearer',
+          prefix: '_token.',
+        },
+        user: {},
+        endpoints: {
+          login: { url: '/login', method: 'post' },
+          logout: false,
+          user: false
+        }
+      }
+    }
+  },
+
   axios: {
     baseURL: 'http://217.71.201.51/api/'
     // baseURL: 'http://localhost:5000/api'
   },
 
-  // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
   vuetify: {
     customVariables: ['~/assets/variables.scss'],
     rtl: true,
@@ -86,7 +107,6 @@ export default {
     }
   },
 
-  // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
   },
 }

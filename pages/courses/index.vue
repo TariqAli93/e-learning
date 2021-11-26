@@ -142,18 +142,16 @@
         </v-toolbar>
       </template>
 
-      <template #[`item.featuredImage`]="{ item }">
+      <template #[`item.coursePath`]="{ item }">
         <img
-          :src="item.featuredImage"
-          :alt="item.courseName"
+          :src="$axios.defaults.baseURL + item.coursePath"
           class="table__image shadow-1"
         />
 
         <div class="hover__preview">
           <div class="hover__preview__content primary shadow-1 radius-1">
             <img
-              :src="item.featuredImage"
-              :alt="item.courseName"
+              :src="$axios.defaults.baseURL + item.coursePath"
               class="hover__preview__img"
             />
           </div>
@@ -189,17 +187,17 @@ export default {
         {
           text: 'الصورة',
           align: 'start',
-          value: 'featuredImage',
+          value: 'coursePath',
           sortable: false,
         },
-        { text: 'المعرف', align: 'start', value: 'courseId' },
-        { text: 'اسم الكورس', value: 'courseName', sortable: false },
-        { text: 'المادة', value: 'courseSubject', sortable: false },
-        { text: 'المدرس', value: 'teacher', sortable: false },
-        { text: 'عدد الطلاب', value: 'students.length' },
-        { text: 'عدد الفيديوات', value: 'videos.length' },
-        { text: 'سعر الكورس', value: 'price' },
-        { text: 'التاريخ', value: 'createdAt' },
+        { text: 'المعرف', align: 'start', value: 'idCourse', sortable: false, },
+        { text: 'اسم الكورس', value: 'courseTitle', sortable: false },
+        { text: 'التقيم', value: 'courseRate', sortable: false, },
+        { text: 'عدد الفيديوات', value: 'CourseVideo.length', sortable: false, },
+        { text: 'سعر الكورس', value: 'coursePrice', sortable: false, },
+        { text: 'سعر المنصة', value: 'platformPrice', sortable: false, },
+        { text: 'المادة', value: 'subject.subjectName', sortable: false, },
+        { text: 'التاريخ', value: 'createdAt', sortable: false, },
         { text: 'الاجرائات', value: 'actions', sortable: false },
       ],
 
@@ -231,7 +229,7 @@ export default {
     },
 
     OpenCourse(item) {
-      this.$router.push({ path: `/courses/${item.courseId}/` })
+      this.$router.push({ path: `/courses/${item.idCourse}/` })
     },
 
     SaveDate(date) {

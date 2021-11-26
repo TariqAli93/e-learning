@@ -18,7 +18,7 @@
                   v-on="on"
                 >
                   <v-icon class="ml-2">icon-profile</v-icon>
-                  <span>اسم المستخدم</span>
+                  <span v-if="$auth.loggedIn">{{ $auth.user.userName }}</span>
                 </v-btn>
               </template>
 
@@ -32,7 +32,7 @@
 
                 <v-divider></v-divider>
 
-                <v-list-item>
+                <v-list-item @click="$auth.logout()">
                   <v-list-item-icon>
                     <v-icon>mdi-logout</v-icon>
                   </v-list-item-icon>

@@ -27,7 +27,11 @@
 </template>
 
 <script>
-export default {}
+export default {
+  mounted() {
+    this.$auth.$storage.syncUniversal('user', this.$auth.$storage.getUniversal('user'))
+  },
+}
 </script>
 
 <style lang="scss" scoped>

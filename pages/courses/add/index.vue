@@ -126,6 +126,18 @@
               ></v-file-input>
             </v-col>
 
+            <v-col cols="12">
+              <v-rating
+                v-model="courseRate"
+                color="yellow darken-3"
+                background-color="grey darken-1"
+                empty-icon="$ratingFull"
+                half-increments
+                hover
+                large
+              ></v-rating>
+            </v-col>
+
             <v-col cols="12" sm="12" md="12" lg="12" xl="12">
               <v-textarea
                 name="courseDescription"
@@ -184,12 +196,13 @@ export default {
       classes: [],
       subjects: [],
       classId: null,
+      courseRate: 0,
     }
   },
 
   mounted() {
     this.getClasses()
-    this.getTechers()
+    this.getTeachers()
   },
 
   methods: {
@@ -204,28 +217,29 @@ export default {
         })
     },
 
-    getSubjects(item) {
-      this.isClassSelected = true
-      this.subjects = item.Subject
-      this.classId = item.idClass
-    },
-
-    getTechers() {
+    getTeachers() {
       this.$axios
-        .get('userRoles/3')
-        .then((user) => {
-          this.teachers = user.data
+        .get(`userRoles/3`)
+        .then((result) => {
+          this.teachers = result.data
+          console.log(result.data)
         })
         .catch((error) => {
           console.log(error)
         })
     },
 
+    getSubjects(item) {
+      this.isClassSelected = true
+      this.subjects = item.Subject
+      this.classId = item.idClass
+    },
+
     saveImage(event) {
       this.tempImage = event
     },
 
-    createCourse(event) {
+    async createCourse(event) {
       let course = {}
       if (this.$refs.newCourseForm.validate()) {
         course = {
@@ -237,17 +251,37 @@ export default {
         const form = new FormData()
         form.append('attachment', this.tempImage)
 
-        console.log(form);
+        console.log({ form, course })
 
-        this.$axios
-          .post('upload', form)
-          .then((path) => {
-            console.log(path)
-            console.log(course)
-          })
-          .catch((error) => {
-            console.log(error.response)
-          })
+        try {
+          const upload = await this.$axios.post('upload', form)
+          if (upload.data.imagePath) {
+            const data = {
+              courseTitle: course.courseTitle,
+              courseDescription: course.courseDescription,
+              courseRate: this.courseRate,
+              coursePrice: parseFloat(course.coursePrice),
+              classId: course.courseClass * 1,
+              createdBy: course.courseCreator * 1,
+              coursePath: upload.data.imagePath,
+              subjectId: course.courseSubject * 1,
+              platformPrice: parseFloat(course.coursePlatformPrice),
+            }
+
+            this.$axios.post('addCourse', data).then(course => {
+              this.$toast.success('تم اضافة كورس جديد', {
+                duration: 3000,
+                position: 'top-center'
+              })
+
+              this.$refs.newCourseForm.reset()
+            }).catch(err => {
+              console.error(err.response)
+            })
+          }
+        } catch (error) {
+          console.error(error.response)
+        }
       }
     },
   },
