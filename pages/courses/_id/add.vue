@@ -40,54 +40,37 @@
 
       <v-form ref="AddNewVideoToCourse" v-model="newVideoForm" lazy-validation>
         <v-row>
-          <v-col cols="12" sm="12" md="12" lg="4" xl="4">
+          <v-col cols="12" sm="12" md="6" lg="6" xl="6">
             <v-text-field
               v-model="videoTitleField"
               label="عنوان الفيديو"
               :rules="rules"
               outlined
-              dense
               color="text"
+              prepend-inner-icon="title"
             ></v-text-field>
           </v-col>
 
-          <v-col cols="12" sm="12" md="12" lg="4" xl="4">
+          <v-col cols="12" sm="12" md="6" lg="6" xl="6">
             <v-text-field
               v-model="videoUrlField"
               label="رابط الفيديو"
               :rules="rules"
               outlined
-              dense
               color="text"
+              prepend-inner-icon="mdi-youtube"
             ></v-text-field>
           </v-col>
 
-          <v-col cols="12" sm="12" md="12" lg="4" xl="4">
-            <v-file-input
-              v-model="videoAttachemntsField"
-              label="مرفقات الفيديو"
+          <v-col cols="12" sm="12" md="12" lg="12" xl="12">
+            <v-textarea
+              v-model="videoDescriptionField"
+              label="رابط الفيديو"
               :rules="rules"
               outlined
-              dense
               color="text"
-            ></v-file-input>
-          </v-col>
-
-          <v-col cols="12" sm="12" md="12" lg="12" xl="12">
-            <wysiwyg
-              v-model="videoDescriptionField"
-              placeholder="وصف الفيديو"
-              :rules="rules"
-              class="
-                shadow-1
-                radius-1
-                primary
-                text
-                primary--text
-                custom__wysiwyg
-                mb-10
-              "
-            />
+              prepend-inner-icon="text_fields"
+            ></v-textarea>
           </v-col>
         </v-row>
 
@@ -95,6 +78,7 @@
           block
           color="success"
           class="primary--text"
+          type="submit"
           :disabled="!newVideoForm"
         >
           حفظ الفيديو

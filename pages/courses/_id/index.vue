@@ -1,17 +1,166 @@
 <template>
   <div class="course-page">
-    <v-dialog v-model="updateViedoDialog">
+    <v-dialog
+      v-model="updateVideoDialog"
+      max-width="750px"
+      transition="slide-y-transition"
+    >
       <v-card color="secondary" class="shadow-1 radius-1 pa-10">
-        <v-toolbar color="primary" class="shadow-1 radius-">
+        <v-toolbar color="primary" class="shadow-1 radius-1 mb-10">
           <h4>تحديث الفيديو</h4>
           <v-spacer />
-          <v-btn icon color="accent" @click="updateViedoDialog = false"></v-btn>
+          <v-btn icon color="accent" @click="updateVideoDialog = false">
+            <v-icon>close</v-icon>
+          </v-btn>
         </v-toolbar>
+
+        <v-form
+          ref="updateVideoRef"
+          lazy-validation
+          v-model="updateForm"
+          @submit.prevent="updateVideo"
+        >
+          <v-row>
+            <v-col cols="12" sm="12" md="6" lg="6" xl="6">
+              <v-text-field
+                name="videoTitle"
+                :rules="rules"
+                v-model="updatedVideo.videoTitle"
+                label="عنوان الفيديو"
+                outlined
+                color="text"
+                clearable
+                prepend-inner-icon="title"
+              ></v-text-field>
+            </v-col>
+
+            <v-col cols="12" sm="12" md="6" lg="6" xl="6">
+              <v-text-field
+                name="videoLink"
+                :rules="rules"
+                v-model="updatedVideo.videoLink"
+                label="رابط الفيديو"
+                outlined
+                color="text"
+                clearable
+                prepend-inner-icon="mdi-youtube"
+              ></v-text-field>
+            </v-col>
+
+            <v-col cols="12">
+              <v-textarea
+                name="videoDescription"
+                :rules="rules"
+                v-model="updatedVideo.videoDescription"
+                label="وصف الفيديو"
+                outlined
+                color="text"
+                clearable
+                prepend-inner-icon="text_fields"
+              ></v-textarea>
+            </v-col>
+          </v-row>
+
+          <v-btn
+            block
+            large
+            color="success"
+            depressed
+            type="submit"
+            :disabled="!updateForm"
+            >حفظ الفيديو</v-btn
+          >
+        </v-form>
+      </v-card>
+    </v-dialog>
+
+    <v-dialog
+      v-model="createVideoDialog"
+      max-width="750px"
+      transition="slide-y-transition"
+    >
+      <v-card color="secondary" class="shadow-1 radius-1 pa-10">
+        <v-toolbar color="primary" class="shadow-1 radius-1 mb-10">
+          <h4>اضافة فيديو جديد</h4>
+          <v-spacer />
+          <v-btn icon color="accent" @click="createVideoDialog = false">
+            <v-icon>close</v-icon>
+          </v-btn>
+        </v-toolbar>
+
+        <v-form
+          ref="createVideoRef"
+          v-model="createForm"
+          lazy-validation
+          @submit.prevent="createVideo($event)"
+        >
+          <v-row>
+            <v-col cols="12" sm="12" md="6" lg="6" xl="6">
+              <v-text-field
+                name="videoTitle"
+                label="عنوان الفيديو"
+                :rules="rules"
+                outlined
+                color="text"
+                prepend-inner-icon="title"
+              ></v-text-field>
+            </v-col>
+
+            <v-col cols="12" sm="12" md="6" lg="6" xl="6">
+              <v-text-field
+                name="videoLink"
+                label="رابط الفيديو"
+                :rules="rules"
+                outlined
+                color="text"
+                prepend-inner-icon="mdi-youtube"
+              ></v-text-field>
+            </v-col>
+
+            <v-col cols="12">
+              <v-text-field
+                name="unlockAt"
+                label="تاريخ الفتح"
+                :rules="rules"
+                outlined
+                color="text"
+                type="datetime-local"
+                prepend-inner-icon="mdi-youtube"
+              ></v-text-field>
+            </v-col>
+
+            <v-col cols="12" sm="12" md="12" lg="12" xl="12">
+              <v-textarea
+                name="videoDescription"
+                label="وصف الفيديو"
+                :rules="rules"
+                outlined
+                color="text"
+                prepend-inner-icon="text_fields"
+              ></v-textarea>
+            </v-col>
+          </v-row>
+
+          <v-btn
+            block
+            color="success"
+            class="primary--text"
+            type="submit"
+            :disabled="!createForm"
+          >
+            حفظ الفيديو
+          </v-btn>
+        </v-form>
       </v-card>
     </v-dialog>
 
     <v-card color="secondary" class="shadow-1 radius-1">
-      <v-data-table :headers="headers" :items="videos" :search="search" class="shadow-1 radius-1 pa-5 secondary courses__table">
+      <v-data-table
+        :headers="headers"
+        :items="videos"
+        :search="search"
+        class="shadow-1 radius-1 pa-5 secondary courses__table"
+      >
         <template #top>
           <v-toolbar flat color="primary" class="shadow-1 radius-1">
             <div class="d-flex align-center justify-evenly" style="width: 100%">
@@ -38,30 +187,12 @@
                     class="mr-2"
                     v-bind="attrs"
                     v-on="on"
-                    @click="$router.push(`/courses/${$route.params.id}/add/`)"
+                    @click="createVideoDialog = true"
                   >
                     <v-icon>mdi-plus</v-icon>
                   </v-btn>
                 </template>
                 <span class="primary--text">اضافة فيديو</span>
-              </v-tooltip>
-
-              <v-tooltip bottom transition="slide-y-transition" color="text">
-                <template #activator="{ on, attrs }">
-                  <v-btn
-                    icon
-                    color="text"
-                    class="mr-2"
-                    v-bind="attrs"
-                    v-on="on"
-                    @click="
-                      $router.push(`/courses/${$route.params.id}/settings/`)
-                    "
-                  >
-                    <v-icon>mdi-tune</v-icon>
-                  </v-btn>
-                </template>
-                <span class="primary--text">اعدادات الكورس</span>
               </v-tooltip>
 
               <v-tooltip bottom transition="slide-y-transition" color="text">
@@ -84,14 +215,19 @@
         </template>
 
         <template #[`item.videoLink`]="{ item }">
-          <v-btn color="transparent" depressed :href="item.videoLink" target="_blank">
+          <v-btn
+            color="transparent"
+            depressed
+            :href="item.videoLink"
+            target="_blank"
+          >
             <v-icon class="ml-2" color="error">mdi-youtube</v-icon>
             <span>عرض الفيديو</span>
           </v-btn>
         </template>
 
         <template #[`item.actions`]="{ item }">
-          <v-btn icon color="warning" @click="editVideo(item)">
+          <v-btn icon color="warning" @click="initUpdateVideo(item)">
             <v-icon>edit</v-icon>
           </v-btn>
           <v-btn icon color="error" @click="deleteVideo(item)">
@@ -108,39 +244,45 @@ export default {
   data() {
     return {
       search: '',
+      updateVideoDialog: false,
+      createVideoDialog: false,
+      updateForm: false,
+      createForm: false,
+      rules: [(v) => !!v || 'لا يمكن ترك الحقل فارغ'],
       headers: [
         {
           text: '#',
           sortable: false,
           align: 'start',
-          value: 'idCourseVideo'
+          value: 'idCourseVideo',
         },
         {
           text: 'عنوان الفيديو',
           sortable: false,
           align: 'start',
-          value: 'videoTitle'
+          value: 'videoTitle',
         },
         {
           text: 'رابط الفيديو',
           sortable: false,
           align: 'start',
-          value: 'videoLink'
+          value: 'videoLink',
         },
         {
           text: 'الوصف',
           sortable: false,
           align: 'start',
-          value: 'videoDescription'
+          value: 'videoDescription',
         },
         {
           text: 'الاجرائات',
           sortable: false,
           align: 'start',
-          value: 'actions'
-        }
+          value: 'actions',
+        },
       ],
       videos: [],
+      updatedVideo: {},
     }
   },
 
@@ -158,9 +300,73 @@ export default {
         console.error(error.response)
       }
     },
+
+    initUpdateVideo(item) {
+      const self = this
+      self.updateVideoDialog = true
+      this.updatedVideo = item
+      console.log(item)
+    },
+
+    async updateVideo() {
+      if (this.$refs.updateVideoRef.validate()) {
+        const videoId = this.updatedVideo.idCourseVideo
+        try {
+          // eslint-disable-next-line no-unused-vars
+          const update = await this.$axios.put(
+            `courseVideo/${videoId}`,
+            this.updatedVideo
+          )
+          this.updateVideoDialog = false
+          this.getVideos()
+        } catch (error) {
+          console.log(error.response)
+        }
+      }
+    },
+
+    async deleteVideo(item) {
+      if (confirm('هل تريد حذف الفيديو ؟')) {
+        const videoId = item.idCourseVideo
+        try {
+          // eslint-disable-next-line no-unused-vars
+          const deleteVideo = await this.$axios.delete(`courseVideo/${videoId}`)
+          this.getVideos()
+        } catch (error) {
+          console.log(error.response)
+        }
+      }
+    },
+
+    async createVideo(event) {
+      try {
+        const data = Object.fromEntries(new FormData(event.target))
+        const myObj = {
+          ...data,
+          courseId: this.$route.params.id * 1,
+          createdBy: this.$auth.user.idUser * 1,
+          unlockAt: new Date(data.unlockAt),
+        }
+
+        console.log(myObj)
+
+        if(this.$refs.createVideoRef.validate()) {
+          // eslint-disable-next-line no-unused-vars
+          const create = await this.$axios.post(`addCourseVideo`, myObj)
+          this.getVideos()
+          this.createVideoDialog = false
+        }
+
+      } catch (error) {
+        console.log(error.response)
+      }
+    },
   },
 }
 </script>
 
-<style>
+<style lang="scss">
+input[type='datetime-local']::-webkit-calendar-picker-indicator {
+  display: none;
+}
 </style>

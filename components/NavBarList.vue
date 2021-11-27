@@ -1,18 +1,38 @@
-/* eslint-disable camelcase */
 <template>
-  <ul class="navbar__list">
-    <li v-for="list in NavList" :key="list.title" class="navbar__list__item">
-      <NuxtLink
-        :to="list.to"
-        active-class="active-nav text--text"
-        class="text--text"
+  <v-list
+    nav
+    dense
+    color="transparent"
+    flat
+    class="d-flex align-center justify-space-around"
+    width="100%"
+  >
+    <v-list-item
+      v-for="list in NavList"
+      :key="list.title"
+      style="margin: 0 10px"
+      :to="list.to"
+      dense
+      exact-active-class="primary text--text shadow-1"
+      :class="{
+        'pa-0 ma-0 align-center justify-center': $vuetify.breakpoint.mobile,
+        'align-center justify-center': !$vuetify.breakpoint.mobile,
+      }"
+    >
+      <v-list-item-avatar :class="{ 'mr-0 ml-0': $vuetify.breakpoint.mobile }">
+        <v-icon>{{ list.icon }}</v-icon>
+      </v-list-item-avatar>
+
+      <v-list-item-content
+        v-if="!$vuetify.breakpoint.mobile"
+        :class="{
+          'align-center justify-center flex-grow-1': !$vuetify.breakpoint.mobile,
+        }"
       >
-        <v-icon v-text="list.icon"></v-icon>
-        <div v-if="list.title !== ''" class="d-block" style="width: 10px"></div>
-        <span v-if="list.title !== ''">{{ list.title }}</span>
-      </NuxtLink>
-    </li>
-  </ul>
+        <v-list-item-title> {{ list.title }} </v-list-item-title>
+      </v-list-item-content>
+    </v-list-item>
+  </v-list>
 </template>
 
 <script>
@@ -87,7 +107,7 @@ export default {
       position: relative;
 
       &:before {
-        content: "";
+        content: '';
         position: absolute;
         width: 100%;
         height: 5px;

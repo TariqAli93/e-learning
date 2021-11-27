@@ -1,103 +1,17 @@
 <template>
   <div id="CoursesPage">
-    <div class="courses__filter mb-10">
-      <v-card class="shadow-1 radius-1 secondary pa-5">
-        <div class="d-flex">
-          <h4>فرز الكورسات</h4>
-          <v-spacer></v-spacer>
-          <h4>نتائج البحث: {{ courses.length }}</h4>
-        </div>
-        <v-divider class="mt-5 mb-5"></v-divider>
-        <v-row>
-          <v-col cols="12" xs="12" sm="12" md="12" lg="3" xl="3">
-            <v-menu
-              ref="datesMenuRef"
-              v-model="datesMenu"
-              transition="scale-transition"
-              offset-y
-              left
-              max-width="290px"
-              min-width="auto"
-              :close-on-content-click="false"
-            >
-              <template #activator="{ on, attrs }">
-                <v-text-field
-                  v-model="dateRangeText"
-                  label="التاريخ (من و الى)"
-                  readonly
-                  outlined
-                  color="text"
-                  dark
-                  v-bind="attrs"
-                  dense
-                  hide-details
-                  clearable
-                  v-on="on"
-                >
-                </v-text-field>
-              </template>
-
-              <v-card color="white" elevation="0">
-                <v-date-picker
-                  v-model="dates"
-                  range
-                  color="secondary"
-                  light
-                  header-color="secondary"
-                  @change="SaveDate"
-                ></v-date-picker>
-              </v-card>
-            </v-menu>
-          </v-col>
-
-          <v-col cols="12" xs="12" sm="12" md="12" lg="3" xl="3">
-            <v-select
-              v-model="subject"
-              :items="[{ text: 'subject', value: 'subject' }]"
-              color="text"
-              outlined
-              dense
-              label="المادة"
-              hide-details
-            ></v-select>
-          </v-col>
-
-          <v-col cols="12" xs="12" sm="12" md="12" lg="3" xl="3">
-            <v-select
-              v-model="filterTeachers"
-              :items="[{ text: 'Teacher', value: 'Teacher' }]"
-              color="text"
-              outlined
-              dense
-              label="المدرس"
-              hide-details
-            ></v-select>
-          </v-col>
-
-          <v-col cols="12" xs="12" sm="12" md="12" lg="3" xl="3">
-            <v-btn
-              color="text"
-              width="45%"
-              light
-              depressed
-              @click="FilterTheCourses"
-            >
-              تطبيق الفرز
-            </v-btn>
-
-            <v-btn
-              color="warning"
-              class="primary--text w-50"
-              width="45%"
-              depressed
-              @click.stop="GetCourses"
-            >
-              اعادة الضبط
-            </v-btn>
-          </v-col>
-        </v-row>
+    <v-dialog v-model="updateCourseDialog" max-width="750px" transition="slide-y-transition">
+      <v-card color="secondary" class="shadow-1 radius-1 pa-10">
+        <v-toolbar color="primary" class="shadow-1 radius-1">
+          <h4>تعديل الكورس</h4>
+          <v-spacer />
+          <v-btn color="error" icon @click="updateCourseDialog = false">
+            <v-icon>close</v-icon>
+          </v-btn>
+        </v-toolbar>
       </v-card>
-    </div>
+    </v-dialog>
+
     <!-- course table -->
     <v-data-table
       :headers="headers"
@@ -162,10 +76,14 @@
         <v-btn icon color="success" @click.prevent="OpenCourse(item)">
           <v-icon>mdi-eye</v-icon>
         </v-btn>
-      </template>
 
-      <template #[`item.createdAt`]="{ item }">
-        {{ FormateDate(item.createdAt) }}
+        <v-btn icon color="warning" @click.prevent="initUpdateCourse(item)">
+          <v-icon>edit</v-icon>
+        </v-btn>
+
+        <v-btn icon color="error" @click.prevent="deleteCourse(item)">
+          <v-icon>delete</v-icon>
+        </v-btn>
       </template>
     </v-data-table>
     <!-- course table -->
@@ -174,15 +92,13 @@
 
 <script>
 // eslint-disable-next-line no-unused-vars
-import moment from 'moment'
 export default {
   data() {
     return {
       search: '',
       dates: [],
       datesMenu: false,
-      subject: '',
-      filterTeachers: '',
+      updateCourseDialog: false,
       headers: [
         {
           text: 'الصورة',
@@ -232,27 +148,17 @@ export default {
       this.$router.push({ path: `/courses/${item.idCourse}/` })
     },
 
+    initUpdateCourse(item) {
+      console.log(item)
+      this.updateCourseDialog = true
+    },
+
+    deleteCourse(item) {
+      console.log(item)
+    },
+
     SaveDate(date) {
       this.$refs.datesMenuRef.save(date)
-    },
-
-    FilterTheCourses() {
-      if (!!this.dateRangeText && this.dateRangeText.length > 0) {
-        const dates = this.dateRangeText.split('~')
-        const from = dates[0]
-        const to = dates[1]
-
-        const filterd = this.courses.filter((course) => {
-          const courseDate = moment(course.createdAt).format('DD-MM-YYYY')
-          return moment(courseDate).isBetween(from, to)
-        })
-
-        this.courses = filterd
-      }
-    },
-
-    FormateDate(date) {
-      return moment(date).format('DD-MM-YYYY')
     },
   },
 }
