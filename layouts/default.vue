@@ -27,6 +27,7 @@
 </template>
 
 <script>
+import 'material-design-icons-iconfont/dist/material-design-icons.css'
 export default {
   mounted() {
     this.$auth.$storage.syncUniversal('user', this.$auth.$storage.getUniversal('user'))
