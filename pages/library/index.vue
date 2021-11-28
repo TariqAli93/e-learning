@@ -14,7 +14,12 @@
           </v-btn>
         </v-toolbar>
 
-        <v-form ref="uploadFileRef" v-model="uploadFileForm" lazy-validation @submit.prevent="uploadFile">
+        <v-form
+          ref="uploadFileRef"
+          v-model="uploadFileForm"
+          lazy-validation
+          @submit.prevent="uploadFile"
+        >
           <v-row>
             <v-col cols="12" sm="12" md="6" lg="6" xl="6">
               <v-text-field
@@ -43,6 +48,7 @@
                 outlined
                 :rules="rules"
                 color="text"
+                accept=".png, .jpg, .jpeg, .pdf, .doc,.docx"
                 @change="saveImage"
               ></v-file-input>
             </v-col>
@@ -101,6 +107,26 @@
           </div>
         </v-toolbar>
       </template>
+
+      <template #[`item.actions`]="{ item }">
+        <v-btn color="error" depressed @click="deleteFile(item)">
+          <v-icon>delete</v-icon>
+          <span>حذف الملف</span>
+        </v-btn>
+      </template>
+
+      <template #[`item.documentPath`]="{ item }">
+        <v-img
+          v-if="item.documentExt === 'png' || item.documentExt === 'jpg' || item.documentExt === 'jpeg'"
+          :src="$axios.defaults.baseURL + item.documentPath"
+          max-width="100px"
+          max-height="100px"
+        ></v-img>
+
+        <v-btn color="secondary" block large v-else>
+          تحميل
+        </v-btn>
+      </template>
     </v-data-table>
   </div>
 </template>
@@ -115,6 +141,7 @@ export default {
     subTitle: '',
     document: '',
     tempImage: null,
+    tempImageExt: '',
     headers: [
       {
         text: 'المعرف',
@@ -126,6 +153,7 @@ export default {
       { text: 'العنوان الثانوي', value: 'subTitle', sortable: false },
       { text: 'الملف', value: 'documentPath', sortable: false },
       { text: 'بواسطة', value: 'user.userName', sortable: false },
+      { text: 'النوع', value: 'documentExt', sortable: false },
       { text: 'الاجرائات', value: 'actions', sortable: false },
     ],
 
@@ -142,16 +170,53 @@ export default {
       this.$axios
         .get('globalLibraries')
         .then((file) => {
-          this.files = file.data
-          console.log(file.data)
+          this.files = file.data.map((fi) => {
+            return {
+              ...fi,
+              idLibrary: fi.idLibrary,
+              title: fi.title,
+              subTitle: fi.subTitle,
+              documentPath: fi.documentPath,
+              documentExt: this.getExt(fi),
+            }
+          })
         })
         .catch((err) => {
           console.log(err.response)
         })
     },
 
+    getExt(file) {
+      const ext = file.documentPath.split('.')
+      const fileType = ext[ext.length - 1]
+      if (fileType === 'png' || fileType === 'jpeg' || fileType === 'jpg') {
+        return `${fileType}`
+      } else if (fileType === 'doc' || fileType === 'docx') {
+        return `${fileType}`
+      } else {
+        return 'Unknowun'
+      }
+    },
+
     saveImage(event) {
       this.tempImage = event
+      const file = event.name.split('.')
+      this.tempImageExt = file[file.length - 1]
+      console.log(event)
+    },
+
+    async deleteFile(item) {
+      try {
+        if (confirm('هل تريد حذف الملف ؟')) {
+          const deleteFile = await this.$axios.delete(
+            `globalLibrary/${item.idLibrary}`
+          )
+          console.log(deleteFile.data)
+        }
+        this.getFiles()
+      } catch (error) {
+        console.log(error.response)
+      }
     },
 
     async uploadFile() {
@@ -165,7 +230,7 @@ export default {
             subTitle: this.subTitle,
             documentPath: upload.data.imagePath,
             downloaded: 0,
-            createdBy: this.$auth.user.idUser * 1
+            createdBy: this.$auth.user.idUser * 1,
           })
 
           this.getFiles()
