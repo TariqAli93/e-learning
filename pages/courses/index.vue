@@ -1,17 +1,5 @@
 <template>
   <div id="CoursesPage">
-    <v-dialog v-model="updateCourseDialog" max-width="750px" transition="slide-y-transition">
-      <v-card color="secondary" class="shadow-1 radius-1 pa-10">
-        <v-toolbar color="primary" class="shadow-1 radius-1">
-          <h4>تعديل الكورس</h4>
-          <v-spacer />
-          <v-btn color="error" icon @click="updateCourseDialog = false">
-            <v-icon>close</v-icon>
-          </v-btn>
-        </v-toolbar>
-      </v-card>
-    </v-dialog>
-
     <!-- course table -->
     <v-data-table
       :headers="headers"
@@ -77,7 +65,11 @@
           <v-icon>mdi-eye</v-icon>
         </v-btn>
 
-        <v-btn icon color="warning" @click.prevent="initUpdateCourse(item)">
+        <v-btn
+          icon
+          color="warning"
+          @click.prevent="$router.push(`/courses/${item.idCourse}/update`)"
+        >
           <v-icon>edit</v-icon>
         </v-btn>
 
@@ -98,7 +90,6 @@ export default {
       search: '',
       dates: [],
       datesMenu: false,
-      updateCourseDialog: false,
       headers: [
         {
           text: 'الصورة',
@@ -106,14 +97,14 @@ export default {
           value: 'coursePath',
           sortable: false,
         },
-        { text: 'المعرف', align: 'start', value: 'idCourse', sortable: false, },
+        { text: 'المعرف', align: 'start', value: 'idCourse', sortable: false },
         { text: 'اسم الكورس', value: 'courseTitle', sortable: false },
-        { text: 'التقيم', value: 'courseRate', sortable: false, },
-        { text: 'عدد الفيديوات', value: 'CourseVideo.length', sortable: false, },
-        { text: 'سعر الكورس', value: 'coursePrice', sortable: false, },
-        { text: 'سعر المنصة', value: 'platformPrice', sortable: false, },
-        { text: 'المادة', value: 'subject.subjectName', sortable: false, },
-        { text: 'التاريخ', value: 'createdAt', sortable: false, },
+        { text: 'التقيم', value: 'courseRate', sortable: false },
+        { text: 'عدد الفيديوات', value: 'CourseVideo.length', sortable: false },
+        { text: 'سعر الكورس', value: 'coursePrice', sortable: false },
+        { text: 'سعر المنصة', value: 'platformPrice', sortable: false },
+        { text: 'المادة', value: 'subject.subjectName', sortable: false },
+        { text: 'التاريخ', value: 'createdAt', sortable: false },
         { text: 'الاجرائات', value: 'actions', sortable: false },
       ],
 
@@ -148,13 +139,17 @@ export default {
       this.$router.push({ path: `/courses/${item.idCourse}/` })
     },
 
-    initUpdateCourse(item) {
-      console.log(item)
-      this.updateCourseDialog = true
-    },
-
     deleteCourse(item) {
-      console.log(item)
+      if (confirm('هل تريد حذف الكورس ؟')) {
+        this.$axios
+          .delete(`course/${item.idCourse}`)
+          .then((res) => {
+            this.GetCourses()
+          })
+          .catch((err) => {
+            console.error(err.response)
+          })
+      }
     },
 
     SaveDate(date) {

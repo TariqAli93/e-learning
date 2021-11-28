@@ -16,16 +16,16 @@
 
         <v-form
           ref="updateVideoRef"
-          lazy-validation
           v-model="updateForm"
+          lazy-validation
           @submit.prevent="updateVideo"
         >
           <v-row>
             <v-col cols="12" sm="12" md="6" lg="6" xl="6">
               <v-text-field
+                v-model="updatedVideo.videoTitle"
                 name="videoTitle"
                 :rules="rules"
-                v-model="updatedVideo.videoTitle"
                 label="عنوان الفيديو"
                 outlined
                 color="text"
@@ -36,9 +36,9 @@
 
             <v-col cols="12" sm="12" md="6" lg="6" xl="6">
               <v-text-field
+                v-model="updatedVideo.videoLink"
                 name="videoLink"
                 :rules="rules"
-                v-model="updatedVideo.videoLink"
                 label="رابط الفيديو"
                 outlined
                 color="text"
@@ -49,9 +49,9 @@
 
             <v-col cols="12">
               <v-textarea
+                v-model="updatedVideo.videoDescription"
                 name="videoDescription"
                 :rules="rules"
-                v-model="updatedVideo.videoDescription"
                 label="وصف الفيديو"
                 outlined
                 color="text"

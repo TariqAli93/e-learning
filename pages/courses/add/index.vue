@@ -251,8 +251,6 @@ export default {
         const form = new FormData()
         form.append('attachment', this.tempImage)
 
-        console.log({ form, course })
-
         try {
           const upload = await this.$axios.post('upload', form)
           if (upload.data.imagePath) {
