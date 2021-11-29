@@ -2,10 +2,55 @@
   <div id="distributors-page">
     <v-dialog v-model="createDistributorDialog" max-width="750px" transition="slide-y-transition">
       <v-card color="secondary" class="shadow-1 radius-1 pa-10">
-        <v-form ref="createDistributorRef" v-model="createDistributor" lazy-validation>
+        <v-toolbar color="primary" class="shadow-1 radius-1 mb-10">
+          <h4>انشاء موزع جديد</h4>
+          <v-spacer />
+          <v-btn color="error" icon @click="createDistributorDialog = false">
+            <v-icon>close</v-icon>
+          </v-btn>
+        </v-toolbar>
+        <v-form ref="createDistributorRef" v-model="createDistributorModel" lazy-validation @submit.prevent="createDistributor">
           <v-row>
-            <v-col cols="12" sm="12" md="6" lg="6" xl="6"></v-col>
+            <v-col cols="12" sm="12" md="4" lg="4" xl="4">
+              <v-text-field v-model="username" prepend-inner-icon="person" color="text" outlined label="اسم المستخدم" :rules="rules"></v-text-field>
+            </v-col>
+
+            <v-col cols="12" sm="12" md="4" lg="4" xl="4">
+              <v-text-field v-model="password" :type="showPassword ? 'text' : 'password'" :append-icon="showPassword ? 'visibility_off' : 'visibility'" @click:append="showPassword = !showPassword" prepend-inner-icon="password" color="text" outlined label="كلمة المرور" :rules="rules"></v-text-field>
+            </v-col>
+
+            <v-col cols="12" sm="12" md="4" lg="4" xl="4">
+              <v-text-field v-model="phone" prepend-inner-icon="drag_indicator" color="text" outlined label="رقم الهاتف" :rules="rules"></v-text-field>
+            </v-col>
+
+            <v-col cols="12" sm="12" md="4" lg="4" xl="4">
+              <v-text-field v-model="libraryName" prepend-inner-icon="local_library" color="text" outlined label="اسم المكتبة" :rules="rules"></v-text-field>
+            </v-col>
+
+            <v-col cols="12" sm="12" md="4" lg="4" xl="4">
+              <v-text-field v-model="longitude" prepend-inner-icon="person_pin" color="text" outlined label="خط الطول (longitude)" :rules="rules"></v-text-field>
+            </v-col>
+
+            <v-col cols="12" sm="12" md="4" lg="4" xl="4">
+              <v-text-field v-model="latitude" prepend-inner-icon="person_pin" color="text" outlined label="خط العرض (latitude)" :rules="rules"></v-text-field>
+            </v-col>
+
+            <v-col cols="12" sm="12" md="6" lg="6" xl="6">
+              <v-text-field v-model="provinceId" prepend-inner-icon="map" color="text" outlined label="المحافظة" :rules="rules"></v-text-field>
+            </v-col>
+
+            <v-col cols="12" md="6" lg="6" xl="6">
+              <v-text-field v-model="distributorPhoto" prepend-inner-icon="collections" color="text" outlined label="الصورة" :rules="rules"></v-text-field>
+            </v-col>
+
+            <v-col cols="12">
+              <v-textarea v-model="distributorBio" prepend-inner-icon="format_size" color="text" outlined label="عن الموزع" :rules="rules"></v-textarea>
+            </v-col>
           </v-row>
+
+          <v-btn color="success" large block depressed :disabled="!createDistributorModel" type="submit">
+            حفظ المعلومات
+          </v-btn>
         </v-form>
       </v-card>
     </v-dialog>
@@ -42,7 +87,7 @@
                   v-bind="attrs"
                   class="mr-10"
                   v-on="on"
-                  @click="$router.push('/courses/add')"
+                  @click="createDistributorDialog = true"
                 >
                   <v-icon>add</v-icon>
                 </v-btn>
@@ -102,6 +147,8 @@ export default {
       { text: 'الاجرائات', value: 'actions', sortable: false },
     ],
 
+    createDistributorDialog: false,
+    createDistributorModel: false,
     distributors: [],
     provinces: [],
     roles: [],
@@ -113,6 +160,10 @@ export default {
     distributorPhoto: null,
     distributorBio: null,
     libraryName: null,
+    showPassword: false,
+    latitude: null,
+    longitude: null,
+    rules: [(v) => !!v || 'لا يمكن ترك الحقل فارغ'],
   }),
 
   mounted() {
@@ -120,6 +171,11 @@ export default {
   },
 
   methods: {
+    async createDistributor() {
+      // create user first
+      // then create distributorsInfo
+    },
+
     async getDistributors() {
       try {
         const distributors = await this.$axios.get(`distributorInfos`)
@@ -135,6 +191,7 @@ export default {
         }
 
         this.distributors = users
+        console.log(this.distributors)
       } catch (e) {
         console.error(e.response)
       }
