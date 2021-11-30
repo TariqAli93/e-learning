@@ -188,7 +188,7 @@
         <v-btn
           color="error"
           icon
-          :href="`https://www.google.com/maps/@${item.lang},${item.lat}`"
+          :href="`https://maps.google.com/?q=${item.lat},${item.lang}`"
           target="_blank"
         >
           <v-icon>location_on</v-icon>

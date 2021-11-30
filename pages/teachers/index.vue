@@ -1,7 +1,7 @@
 <template>
-  <div id="distributors-page">
+  <div id="teachers-page">
     <v-dialog
-      v-model="createDistributorDialog"
+      v-model="createTeacherDialog"
       max-width="750px"
       transition="slide-y-transition"
     >
@@ -9,15 +9,15 @@
         <v-toolbar color="primary" class="shadow-1 radius-1 mb-10">
           <h4>انشاء استاذ جديد</h4>
           <v-spacer />
-          <v-btn color="error" icon @click="createDistributorDialog = false">
+          <v-btn color="error" icon @click="createTeacherDialog = false">
             <v-icon>close</v-icon>
           </v-btn>
         </v-toolbar>
         <v-form
-          ref="createDistributorRef"
-          v-model="createDistributorModel"
+          ref="createTeacherRef"
+          v-model="createTeacherModel"
           lazy-validation
-          @submit.prevent="createDistributor"
+          @submit.prevent="createTeachers"
         >
           <v-row>
             <v-col cols="12" sm="12" md="4" lg="4" xl="4">
@@ -58,38 +58,27 @@
 
             <v-col cols="12" sm="12" md="4" lg="4" xl="4">
               <v-text-field
-                v-model="libraryName"
-                prepend-inner-icon="local_library"
+                v-model="specialty"
+                prepend-inner-icon="menu_book"
                 color="text"
                 outlined
-                label="اسم المكتبة"
+                label="التخصص"
                 :rules="rules"
               ></v-text-field>
             </v-col>
 
             <v-col cols="12" sm="12" md="4" lg="4" xl="4">
               <v-text-field
-                v-model="longitude"
-                prepend-inner-icon="person_pin"
+                v-model="schoolName"
+                prepend-inner-icon="title"
                 color="text"
                 outlined
-                label="خط الطول (longitude)"
+                label="اسم المدرسة"
                 :rules="rules"
               ></v-text-field>
             </v-col>
 
             <v-col cols="12" sm="12" md="4" lg="4" xl="4">
-              <v-text-field
-                v-model="latitude"
-                prepend-inner-icon="person_pin"
-                color="text"
-                outlined
-                label="خط العرض (latitude)"
-                :rules="rules"
-              ></v-text-field>
-            </v-col>
-
-            <v-col cols="12" sm="12" md="6" lg="6" xl="6">
               <v-select
                 v-model="provinceId"
                 prepend-inner-icon="map"
@@ -104,7 +93,7 @@
               ></v-select>
             </v-col>
 
-            <v-col cols="12" md="6" lg="6" xl="6">
+            <v-col cols="12" md="12" lg="12" xl="12">
               <v-file-input
                 prepend-icon="collections"
                 color="text"
@@ -117,11 +106,11 @@
 
             <v-col cols="12">
               <v-textarea
-                v-model="distributorBio"
+                v-model="bio"
                 prepend-inner-icon="format_size"
                 color="text"
                 outlined
-                label="عن الموزع"
+                label="عن الاستاذ"
                 :rules="rules"
               ></v-textarea>
             </v-col>
@@ -132,7 +121,7 @@
             large
             block
             depressed
-            :disabled="!createDistributorModel"
+            :disabled="!createTeacherModel"
             type="submit"
           >
             حفظ المعلومات
@@ -143,7 +132,7 @@
 
     <v-data-table
       :headers="headers"
-      :items.sync="distributors"
+      :items.sync="teachers"
       :items-per-page="15"
       item-key="courseId"
       class="shadow-1 radius-1 pa-5 secondary"
@@ -173,7 +162,7 @@
                   v-bind="attrs"
                   class="mr-10"
                   v-on="on"
-                  @click="createDistributorDialog = true"
+                  @click="createTeacherDialog = true"
                 >
                   <v-icon>add</v-icon>
                 </v-btn>
@@ -184,27 +173,16 @@
         </v-toolbar>
       </template>
 
-      <template #[`item.location`]="{ item }">
-        <v-btn
-          color="error"
-          icon
-          :href="`https://www.google.com/maps/@${item.lang},${item.lat}`"
-          target="_blank"
-        >
-          <v-icon>location_on</v-icon>
-        </v-btn>
-      </template>
-
-      <template #[`item.distributorPhoto`]="{ item }">
+      <template #[`item.photoPath`]="{ item }">
         <v-img
-          :src="$axios.defaults.baseURL + item.distributorPhoto"
+          :src="$axios.defaults.baseURL + item.photoPath"
           max-width="50px"
           height="50px"
         ></v-img>
       </template>
 
       <template #[`item.actions`]="{ item }">
-        <v-btn color="error" icon @click="deleteDistributor(item)">
+        <v-btn color="error" icon @click="deleteTeachers(item)">
           <v-icon>delete</v-icon>
         </v-btn>
       </template>
@@ -220,44 +198,40 @@ export default {
       {
         text: 'المعرف',
         align: 'start',
-        value: 'idDistributor',
+        value: 'idTeacher',
         sortable: false,
       },
-      { text: 'الصورة', value: 'distributorPhoto', sortable: false },
+      { text: 'الصورة', value: 'photoPath', sortable: false },
       { text: 'اسم المستخدم', value: 'userName', sortable: false },
-      { text: 'عن الموزع', value: 'distributorBio', sortable: false },
-      { text: 'اسم المكتبة', value: 'libraryName', sortable: false },
+      { text: 'عن الاستاذ', value: 'bio', sortable: false },
+      { text: 'اسم المدرسة', value: 'schoolName', sortable: false },
       { text: 'الهاتف', value: 'phone', sortable: false },
       { text: 'المحافظة', value: 'province.provinceName', sortable: false },
-      { text: 'الخريطة', value: 'location', sortable: false },
       { text: 'الاجرائات', value: 'actions', sortable: false },
     ],
 
-    createDistributorDialog: false,
-    createDistributorModel: false,
-    distributors: [],
+    teachers: [],
     provinces: [],
-    roles: [],
+
+    createTeacherDialog: false,
+    createTeacherModel: false,
+
     provinceId: null,
-    roleId: null,
     username: null,
     password: null,
     phone: null,
-    distributorPhoto: null,
     uploadedImage: null,
-    distributorBio: null,
-    libraryName: null,
     showPassword: false,
-    latitude: null,
-    longitude: null,
+    specialty: null,
+    schoolName: null,
+    bio: null,
+    photoPath: null,
     rules: [(v) => !!v || 'لا يمكن ترك الحقل فارغ'],
   }),
 
   mounted() {
-    this.getDistributors()
-    this.$axios.get('provinces').then((result) => {
-      this.provinces = result.data
-    })
+    this.getProvinces()
+    this.getTeachers()
   },
 
   methods: {
@@ -265,70 +239,77 @@ export default {
       this.uploadedImage = event !== null ? event : null
     },
 
-    async createDistributor() {
-      // create user first
+    async getProvinces() {
+      try {
+        const provinces = await this.$axios.get('provinces')
+        this.provinces = provinces.data
+      } catch (error) {
+        console.log(error.response)
+      }
+    },
+
+    async getTeachers() {
+      try {
+        const teachers = await this.$axios.get(`teacherInfos`)
+        const users = []
+
+        for (let i = 0; i < teachers.data.length; i++) {
+          const user = await this.$axios.get(`user/${teachers.data[i].userId}`)
+          users.push({
+            ...user.data,
+            ...teachers.data[i],
+          })
+        }
+
+        this.teachers = users
+        console.log(users)
+      } catch (e) {
+        console.error(e.response)
+      }
+    },
+
+    async createTeachers() {
       const uploadedImage = new FormData()
       uploadedImage.append('attachment', this.uploadedImage)
 
       try {
         const upload = await this.$axios.post('upload', uploadedImage)
 
-        this.distributorPhoto = upload.data.imagePath
+        this.photoPath = upload.data.imagePath
 
         const createUsers = await this.$axios.post('addUser', {
           userName: this.username,
           password: this.password,
           phone: this.phone,
-          roleId: 4,
+          roleId: 3,
           provinceId: this.provinceId * 1,
         })
 
-        const createDistributors = await this.$axios.post(
-          'addDistributorInfo',
-          {
-            lang: this.longitude,
-            lat: this.latitude,
-            libraryName: this.libraryName,
-            distributorPhoto: this.distributorPhoto,
-            distributorBio: this.distributorBio,
-            userId: createUsers.data.idUser
-          }
-        )
+        const createTeacher = await this.$axios.post('addTeacherInfo', {
+          specialty: this.specialty,
+          schoolName: this.schoolName,
+          photoPath: this.photoPath,
+          bio: this.bio,
+          userId: createUsers.data.idUser,
+        })
 
-        this.getDistributors()
-        this.createDistributorDialog = false
+        this.getTeachers()
+        this.createTeacherDialog = false
       } catch (error) {
-        console.log(error)
+        console.error(error.response)
       }
+      // upload image
+      // create user
+      // create teacher info
     },
 
-    async getDistributors() {
-      try {
-        const distributors = await this.$axios.get(`distributorInfos`)
-        const users = []
-        for (let i = 0; i < distributors.data.length; i++) {
-          const user = await this.$axios.get(
-            `user/${distributors.data[i].userId}`
-          )
-          users.push({
-            ...user.data,
-            ...distributors.data[i],
-          })
-        }
-
-        this.distributors = users
-      } catch (e) {
-        console.error(e.response)
-      }
-    },
-
-    async deleteDistributor(item) {
-      if (confirm('هل تريد حذف الموزع ؟')) {
+    async deleteTeachers(item) {
+      if (confirm('هل تريد حذف الاستاذ ؟')) {
         try {
-          const deleteDist = await this.$axios.delete(
-            `distributorInfo/${item.idDistributor}`
+          const deleteTeacher = await this.$axios.delete(
+            `teacherInfo/${item.idTeacher}`
           )
-          this.getDistributors()
+          this.getTeachers()
         } catch (error) {
           console.log(error.response)
         }
