@@ -269,38 +269,37 @@ export default {
     },
 
     async createTeachers() {
-      const uploadedImage = new FormData()
-      uploadedImage.append('attachment', this.uploadedImage)
+      if (this.$refs.createTeacherRef.validate()) {
+        const uploadedImage = new FormData()
+        uploadedImage.append('attachment', this.uploadedImage)
 
-      try {
-        const upload = await this.$axios.post('upload', uploadedImage)
+        try {
+          const upload = await this.$axios.post('upload', uploadedImage)
 
-        this.photoPath = upload.data.imagePath
+          this.photoPath = upload.data.imagePath
 
-        const createUsers = await this.$axios.post('addUser', {
-          userName: this.username,
-          password: this.password,
-          phone: this.phone,
-          roleId: 3,
-          provinceId: this.provinceId * 1,
-        })
+          const createUsers = await this.$axios.post('addUser', {
+            userName: this.username,
+            password: this.password,
+            phone: this.phone,
+            roleId: 3,
+            provinceId: this.provinceId * 1,
+          })
 
-        const createTeacher = await this.$axios.post('addTeacherInfo', {
-          specialty: this.specialty,
-          schoolName: this.schoolName,
-          photoPath: this.photoPath,
-          bio: this.bio,
-          userId: createUsers.data.idUser,
-        })
+          const createTeacher = await this.$axios.post('addTeacherInfo', {
+            specialty: this.specialty,
+            schoolName: this.schoolName,
+            photoPath: this.photoPath,
+            bio: this.bio,
+            userId: createUsers.data.idUser,
+          })
 
-        this.getTeachers()
-        this.createTeacherDialog = false
-      } catch (error) {
-        console.error(error.response)
+          this.getTeachers()
+          this.createTeacherDialog = false
+        } catch (error) {
+          console.error(error.response)
+        }
       }
-      // upload image
-      // create user
-      // create teacher info
     },
 
     async deleteTeachers(item) {
