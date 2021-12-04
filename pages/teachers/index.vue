@@ -249,6 +249,7 @@ export default {
     },
 
     async getTeachers() {
+      this.$nuxt.$loading.start()
       try {
         const teachers = await this.$axios.get(`teacherInfos`)
         const users = []
@@ -262,9 +263,10 @@ export default {
         }
 
         this.teachers = users
-        console.log(users)
+        this.$nuxt.$loading.finish()
       } catch (e) {
         console.error(e.response)
+        this.$nuxt.$loading.finish()
       }
     },
 

@@ -76,9 +76,9 @@ export default {
           to: '/users',
         },
         {
-          title: 'الاعدادات',
-          icon: 'mdi-tune',
-          to: '/settings',
+          title: 'التقارير المالية',
+          icon: 'table_chart',
+          to: '/reports',
         },
       ],
     }

@@ -266,7 +266,6 @@ export default {
     },
 
     async createDistributor() {
-      // create user first
       const uploadedImage = new FormData()
       uploadedImage.append('attachment', this.uploadedImage)
 
@@ -303,6 +302,7 @@ export default {
     },
 
     async getDistributors() {
+      this.$nuxt.$loading.start()
       try {
         const distributors = await this.$axios.get(`distributorInfos`)
         const users = []
@@ -317,8 +317,10 @@ export default {
         }
 
         this.distributors = users
+        this.$nuxt.$loading.finish()
       } catch (e) {
         console.error(e.response)
+        this.$nuxt.$loading.finish()
       }
     },
 

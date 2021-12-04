@@ -7,7 +7,7 @@
     >
       <v-card color="secondary" class="shadow-1 radius-1 pa-10">
         <v-toolbar color="primary" class="shadow-1 radius-1 mb-10">
-          <h4>انشاء استاذ جديد</h4>
+          <h4>انشاء طالب جديد</h4>
           <v-spacer />
           <v-btn color="error" icon @click="createStudentDialog = false">
             <v-icon>close</v-icon>
@@ -17,7 +17,7 @@
           ref="createStudentsRef"
           v-model="createStudentModel"
           lazy-validation
-          @submit.prevent="createstudents"
+          @submit.prevent="createStudents"
         >
           <v-row>
             <v-col cols="12" sm="12" md="4" lg="4" xl="4">
@@ -59,7 +59,7 @@
             <v-col cols="12" sm="12" md="4" lg="4" xl="4">
               <v-text-field
                 v-model="grade"
-                prepend-inner-icon="menu_book"
+                prepend-inner-icon="tag"
                 color="text"
                 outlined
                 label="الدرجة"
@@ -93,29 +93,55 @@
               ></v-select>
             </v-col>
 
-            <v-col cols="12" sm="12" md="4" lg="4" xl="4">
-              <v-text-field
-                v-model="dob"
-                prepend-inner-icon="title"
-                color="text"
-                outlined
-                label="تاريخ الميلاد"
-                :rules="rules"
-              ></v-text-field>
+            <v-col cols="12" sm="12" md="6" lg="6" xl="6">
+              <v-menu
+                ref="menu"
+                v-model="menu"
+                :close-on-content-click="false"
+                transition="scale-transition"
+                offset-y
+                min-width="auto"
+              >
+                <template #activator="{ on, attrs }">
+                  <v-text-field
+                    v-model="dob"
+                    prepend-inner-icon="calendar_today"
+                    color="text"
+                    outlined
+                    label="تاريخ الميلاد"
+                    :rules="rules"
+                    readonly
+                    v-bind="attrs"
+                    v-on="on"
+                  ></v-text-field>
+                </template>
+                <v-date-picker
+                  v-model="dob"
+                  color="text"
+                  header-color="secondary"
+                  :active-picker.sync="activePicker"
+                  :max="datePickerMax"
+                  min="1950-01-01"
+                  @change="save"
+                ></v-date-picker>
+              </v-menu>
             </v-col>
 
-            <v-col cols="12" sm="12" md="4" lg="4" xl="4">
+            <v-col cols="12" sm="12" md="6" lg="6" xl="6">
               <v-select
-                v-model="provinceId"
-                prepend-inner-icon="map"
+                name="courseClass"
+                background-color="secondary"
                 color="text"
                 outlined
                 label="الصف"
+                prepend-inner-icon="dashboard"
+                :items="classes"
+                item-text="className"
+                item-value="idClass"
                 :rules="rules"
-                :items="provinces"
                 item-color="text"
-                item-value="idProvince"
-                item-text="provinceName"
+                return-object
+                @change="getSubjects"
               ></v-select>
             </v-col>
           </v-row>
@@ -141,15 +167,17 @@
       item-key="courseId"
       class="shadow-1 radius-1 pa-5 secondary"
       :search="search"
+      loading-text="جاري التحميل"
+      :loading="tableLoading"
     >
       <template #top>
         <v-toolbar flat color="primary" class="shadow-1 radius-1">
           <div class="d-flex align-center justify-evenly" style="width: 100%">
-            <v-toolbar-title style="flex: 1 1 auto">الاساتذة</v-toolbar-title>
+            <v-toolbar-title style="flex: 1 1 auto">الطلاب</v-toolbar-title>
             <v-text-field
               v-model="search"
               color="text"
-              placeholder="ابحث في الاساتذة..."
+              placeholder="ابحث في الطلاب..."
               style="flex: 1 1 auto"
               outlined
               hide-details
@@ -177,14 +205,6 @@
         </v-toolbar>
       </template>
 
-      <template #[`item.photoPath`]="{ item }">
-        <v-img
-          :src="$axios.defaults.baseURL + item.photoPath"
-          max-width="50px"
-          height="50px"
-        ></v-img>
-      </template>
-
       <template #[`item.actions`]="{ item }">
         <v-btn color="error" icon @click="deleteStudents(item)">
           <v-icon>delete</v-icon>
@@ -202,21 +222,28 @@ export default {
       {
         text: 'المعرف',
         align: 'start',
-        value: 'idTeacher',
+        value: 'students.idStudent',
         sortable: false,
       },
-      { text: 'الصورة', value: 'photoPath', sortable: false },
-      { text: 'اسم المستخدم', value: 'userName', sortable: false },
-      { text: 'عن الاستاذ', value: 'bio', sortable: false },
-      { text: 'اسم المدرسة', value: 'schoolName', sortable: false },
-      { text: 'الهاتف', value: 'phone', sortable: false },
-      { text: 'المحافظة', value: 'province.provinceName', sortable: false },
+      { text: 'اسم المستخدم', value: 'user.userName', sortable: false },
+      { text: 'الهاتف', value: 'user.phone', sortable: false },
+      { text: 'اسم المدرسة', value: 'students.schoolName', sortable: false },
+      { text: 'الصف', value: 'class.className', sortable: false },
+      { text: 'المعدل', value: 'students.grade', sortable: false },
+      { text: 'عدد الكورسات', value: 'courses.totalCourses', sortable: false },
+      {
+        text: 'المحافظة',
+        value: 'user.province.provinceName',
+        sortable: false,
+      },
       { text: 'الاجرائات', value: 'actions', sortable: false },
     ],
 
     students: [],
     provinces: [],
     classes: [],
+    subjects: [],
+    isClassSelected: false,
 
     createStudentDialog: false,
     createStudentModel: false,
@@ -229,16 +256,33 @@ export default {
     showPassword: false,
     grade: null,
     schoolName: null,
-    photoPath: null,
+    activePicker: null,
+    dob: null,
+    menu: false,
+    datePickerMax: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+      .toISOString()
+      .substr(0, 10),
     rules: [(v) => !!v || 'لا يمكن ترك الحقل فارغ'],
+    tableLoading: true,
   }),
+
+  watch: {
+    menu(val) {
+      val && setTimeout(() => (this.activePicker = 'YEAR'))
+    },
+  },
 
   mounted() {
     this.getProvinces()
     this.getStudents()
+    this.getClasses()
   },
 
   methods: {
+    save(date) {
+      this.$refs.menu.save(date)
+    },
+
     async getProvinces() {
       try {
         const provinces = await this.$axios.get('provinces')
@@ -248,33 +292,64 @@ export default {
       }
     },
 
+    getClasses() {
+      this.$axios
+        .get(`classes`)
+        .then((c) => {
+          this.classes = c.data
+        })
+        .catch((error) => {
+          console.log(error)
+        })
+    },
+
+    getSubjects(item) {
+      this.classId = item.idClass
+    },
+
     async getStudents() {
+      this.$nuxt.$loading.start()
       try {
         const students = await this.$axios.get(`studentInfos`)
         const users = []
 
         for (let i = 0; i < students.data.length; i++) {
           const user = await this.$axios.get(`user/${students.data[i].userId}`)
-          const courses = await this.$axios.get(`coursesForStudent/${students.data[i].idStudent}`)
-          const classes = await this.$axios.get(`class/${students.data[i].classId}`)
+          const courses = await this.$axios.get(
+            `coursesForStudent/${students.data[i].idStudent}`
+          )
+          const classes = await this.$axios.get(`classes`)
+          const filterdClasses = classes.data.filter((cls) => {
+            return cls.idClass === students.data[i].classId
+          })
 
           users.push({
-            ...user.data,
-            ...classes.data,
-            ...courses.data,
-            ...students.data[i],
+            class: {
+              ...filterdClasses.map((cls) => {
+                return {
+                  className: cls.className,
+                  idClass: cls.idClass,
+                }
+              })[0],
+            },
+            courses: { ...courses.data },
+            user: { ...user.data },
+            students: { ...students.data[i] },
           })
         }
 
         this.students = users
-        console.log(users)
+        this.tableLoading = false
+        this.$nuxt.$loading.finish()
       } catch (e) {
         console.error(e.response)
+        this.$nuxt.$loading.finish()
       }
     },
 
-    async createstudents() {
+    async createStudents() {
       if (this.$refs.createStudentsRef.validate()) {
+        this.$nuxt.$loading.start()
         try {
           const createUsers = await this.$axios.post('addUser', {
             userName: this.username,
@@ -285,8 +360,10 @@ export default {
           })
 
           const createTeacher = await this.$axios.post('addStudentInfo', {
-            grade: this.grade,
+            grade: this.grade * 1,
             schoolName: this.schoolName,
+            dob: this.dob,
+            classId: this.classId,
             userId: createUsers.data.idUser,
           })
 
@@ -302,7 +379,7 @@ export default {
       if (confirm('هل تريد حذف الطالب ؟')) {
         try {
           const deleteStudent = await this.$axios.delete(
-            `studentInfo/${item.idTeacher}`
+            `studentInfo/${item.students.idStudent}`
           )
           this.getStudents()
         } catch (error) {

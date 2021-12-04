@@ -167,6 +167,7 @@ export default {
 
   methods: {
     getFiles() {
+      this.$nuxt.$loading.start()
       this.$axios
         .get('globalLibraries')
         .then((file) => {
@@ -180,9 +181,13 @@ export default {
               documentExt: this.getExt(fi),
             }
           })
+
+          this.$nuxt.$loading.finish()
         })
         .catch((err) => {
           console.log(err.response)
+
+          this.$nuxt.$loading.finish()
         })
     },
 

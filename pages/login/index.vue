@@ -91,6 +91,7 @@ export default {
 
     async login() {
       if (this.$refs.LoginForm.validate()) {
+        this.$nuxt.$loading.start()
         // 784356
         const showMessage = this.$toast.show('جاري تسجيل الدخول...', {
           position: 'top-center',
@@ -110,6 +111,8 @@ export default {
 
           showMessage.goAway()
 
+          this.$nuxt.$loading.finish()
+
           this.$toast.success('تم تسجيل الدخول', {
             duration: 3000,
             position: 'top-center',
@@ -121,6 +124,8 @@ export default {
           })
 
           showMessage.goAway()
+
+          this.$nuxt.$loading.finish()
 
           console.log(e.response.data.errorMessage)
         }

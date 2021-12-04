@@ -2,9 +2,8 @@
   <div id="LibraryPage">
     <v-data-table
       :headers="headers"
-      :items.sync="attachments"
+      :items="users"
       :items-per-page="15"
-      item-key="courseId"
       class="shadow-1 radius-1 pa-5 secondary"
       :search="search"
     >
@@ -23,24 +22,20 @@
               clearable
             >
             </v-text-field>
-
-            <v-tooltip bottom transition="slide-y-transition" color="text">
-              <template #activator="{ on, attrs }">
-                <v-btn
-                  icon
-                  color="text"
-                  v-bind="attrs"
-                  class="mr-10"
-                  v-on="on"
-                  @click="$router.push('/courses/add')"
-                >
-                  <v-icon>mdi-upload</v-icon>
-                </v-btn>
-              </template>
-              <span class="primary--text">رفع ملف</span>
-            </v-tooltip>
           </div>
         </v-toolbar>
+      </template>
+
+      <template #[`item.actions`]="{ item }">
+        <v-btn color="error" icon @click="deleteUser(item)">
+          <v-icon>delete</v-icon>
+        </v-btn>
+      </template>
+
+      <template #[`item.role.roleName`]="{ item }">
+        <v-chip color="primary" label class="text--text">
+          {{ item.role.roleName.toLowerCase() }}
+        </v-chip>
       </template>
     </v-data-table>
   </div>
@@ -51,20 +46,37 @@ export default {
   data: () => ({
     search: '',
     headers: [
-      {
-        text: 'المعرف',
-        align: 'start',
-        value: 'attachemntId',
-        sortable: false,
-      },
-      { text: 'اسم الملف', value: 'attachmentName', sortable: false },
-      { text: 'المادة', value: 'attachmentSubject', sortable: false },
-      { text: 'التاريخ', value: 'createdAt', sortable: false },
+      { text: 'اسم المستخدم', value: 'userName', sortable: false },
+      { text: 'رقم الهاتف', value: 'phone', sortable: false },
+      { text: 'المحافظة', value: 'province.provinceName', sortable: false },
+      { text: 'نوع الحساب', value: 'role.roleName', sortable: false },
       { text: 'الاجرائات', value: 'actions', sortable: false },
     ],
 
-    attachments: [],
+    users: [],
   }),
+
+  mounted() {
+    this.getUsers()
+  },
+
+  methods: {
+    async getUsers() {
+      this.$nuxt.$loading.start()
+      try {
+        const users = await this.$axios.get('users')
+        this.users = users.data
+        this.$nuxt.$loading.finish()
+      } catch (error) {
+        console.error(error.response)
+        this.$nuxt.$loading.finish()
+      }
+    },
+
+    deleteUser(item) {
+      console.log(item)
+    }
+  },
 }
 </script>
 

@@ -32,7 +32,7 @@ export default {
 
   components: true,
 
-  loading: { color: '#fff', throttle: 0, rtl: true },
+  loading: '~/components/loading.vue',
 
   buildModules: [
     '@nuxtjs/eslint-module',

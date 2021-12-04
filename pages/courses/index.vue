@@ -124,11 +124,12 @@ export default {
 
   methods: {
     GetCourses() {
+      this.$nuxt.$loading.start()
       this.$axios
         .get('courses')
         .then((res) => {
           this.courses = res.data
-          console.log(res.data)
+          this.$nuxt.$loading.finish()
         })
         .catch((err) => {
           console.log(err)
