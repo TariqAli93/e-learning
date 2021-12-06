@@ -109,9 +109,8 @@
       </template>
 
       <template #[`item.actions`]="{ item }">
-        <v-btn color="error" depressed @click="deleteFile(item)">
+        <v-btn color="error" icon depressed @click="deleteFile(item)">
           <v-icon>delete</v-icon>
-          <span>حذف الملف</span>
         </v-btn>
       </template>
 
@@ -123,8 +122,8 @@
           max-height="100px"
         ></v-img>
 
-        <v-btn color="secondary" block large v-else>
-          تحميل
+        <v-btn v-else icon color="success" :href="$axios.defaults.baseURL + item.documentPath">
+          <v-icon>download</v-icon>
         </v-btn>
       </template>
     </v-data-table>
@@ -171,6 +170,7 @@ export default {
       this.$axios
         .get('globalLibraries')
         .then((file) => {
+          console.log(file);
           this.files = file.data.map((fi) => {
             return {
               ...fi,
@@ -186,7 +186,6 @@ export default {
         })
         .catch((err) => {
           console.log(err.response)
-
           this.$nuxt.$loading.finish()
         })
     },
@@ -199,7 +198,7 @@ export default {
       } else if (fileType === 'doc' || fileType === 'docx') {
         return `${fileType}`
       } else {
-        return 'Unknowun'
+        return 'pdf'
       }
     },
 

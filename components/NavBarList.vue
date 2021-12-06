@@ -76,6 +76,11 @@ export default {
           to: '/users',
         },
         {
+          title: 'الخصومات',
+          icon: 'mdi-sale',
+          to: '/promo',
+        },
+        {
           title: 'التقارير المالية',
           icon: 'table_chart',
           to: '/reports',

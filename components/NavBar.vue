@@ -8,7 +8,7 @@
 
             <v-spacer></v-spacer>
 
-            <v-menu bottom origin="top right" transition="scale-transition">
+            <v-menu bottom origin="top right" transition="slide-y-transition">
               <template #activator="{ on, attrs }">
                 <v-btn
                   color="transparent"
@@ -23,15 +23,6 @@
               </template>
 
               <v-list dense color="primary">
-                <v-list-item>
-                  <v-list-item-icon>
-                    <v-icon>icon-profile</v-icon>
-                  </v-list-item-icon>
-                  <v-list-item-title>الملف الشخصي</v-list-item-title>
-                </v-list-item>
-
-                <v-divider></v-divider>
-
                 <v-list-item @click="$auth.logout()">
                   <v-list-item-icon>
                     <v-icon>mdi-logout</v-icon>
