@@ -145,12 +145,13 @@
       v-model="updateDistributorDialog"
       max-width="750px"
       transition="slide-y-transition"
+      persistent
     >
       <v-card color="secondary" class="shadow-1 radius-1 pa-10">
         <v-toolbar color="primary" class="shadow-1 radius-1 mb-10">
           <h4>تحديث الموزعين</h4>
           <v-spacer />
-          <v-btn color="error" icon @click="updateDistributorDialog = false">
+          <v-btn color="error" icon @click="closeUpdateDialog">
             <v-icon>close</v-icon>
           </v-btn>
         </v-toolbar>
@@ -159,6 +160,7 @@
           ref="updateDistributorRef"
           v-model="updateDistributorForm"
           lazy-validation
+          @submit.prevent="updateDistributor"
         >
           <v-row>
             <v-col cols="12" sm="12" md="4" lg="4" xl="4">
@@ -169,20 +171,6 @@
                 outlined
                 label="اسم المستخدم"
                 :rules="rules"
-              ></v-text-field>
-            </v-col>
-
-            <v-col cols="12" sm="12" md="4" lg="4" xl="4">
-              <v-text-field
-                v-model="password"
-                :type="showPassword ? 'text' : 'password'"
-                :append-icon="showPassword ? 'visibility_off' : 'visibility'"
-                prepend-inner-icon="password"
-                color="text"
-                outlined
-                label="كلمة المرور"
-                :rules="rules"
-                @click:append="showPassword = !showPassword"
               ></v-text-field>
             </v-col>
 
@@ -230,7 +218,7 @@
               ></v-text-field>
             </v-col>
 
-            <v-col cols="12" sm="12" md="6" lg="6" xl="6">
+            <v-col cols="12" sm="12" md="4" lg="4" xl="4">
               <v-select
                 v-model="provinceId"
                 prepend-inner-icon="map"
@@ -243,17 +231,6 @@
                 item-value="idProvince"
                 item-text="provinceName"
               ></v-select>
-            </v-col>
-
-            <v-col cols="12" md="6" lg="6" xl="6">
-              <v-file-input
-                prepend-icon="collections"
-                color="text"
-                outlined
-                label="الصورة"
-                :rules="rules"
-                @change="saveImage"
-              ></v-file-input>
             </v-col>
 
             <v-col cols="12">
@@ -273,7 +250,7 @@
             large
             block
             depressed
-            :disabled="!createDistributorModel"
+            :disabled="!updateDistributorForm"
             type="submit"
           >
             حفظ المعلومات
@@ -397,6 +374,8 @@ export default {
     showPassword: false,
     latitude: null,
     longitude: null,
+    idDistributor: null,
+    userId: null,
     rules: [(v) => !!v || 'لا يمكن ترك الحقل فارغ'],
   }),
 
@@ -442,7 +421,7 @@ export default {
         )
 
         this.getDistributors()
-        this.createDistributorDialog = false
+        this.closeUpdateDialog()
       } catch (error) {
         console.log(error)
       }
@@ -485,8 +464,61 @@ export default {
     },
 
     openUpdateDialog(item) {
-      console.log(item);
-    }
+      this.updateDistributorDialog = true
+      this.username = item.userName
+      this.phone = item.phone
+      this.libraryName = item.libraryName
+      this.latitude = item.lat
+      this.longitude = item.lang
+      this.provinceId = item.provinceId
+      this.distributorBio = item.distributorBio
+      this.idDistributor = item.idDistributor
+      this.distributorPhoto = item.distributorPhoto
+      this.userId = item.userId
+    },
+
+    closeUpdateDialog() {
+      this.updateDistributorDialog = false
+      this.username = null
+      this.phone = null
+      this.libraryName = null
+      this.latitude = null
+      this.longitude = null
+      this.provinceId = null
+      this.distributorBio = null
+      this.idDistributor = null
+      this.distributorPhoto = null
+      this.userId = null
+    },
+
+    async updateDistributor() {
+      try {
+        if (this.$refs.updateDistributorRef.validate()) {
+          const updateDistributorInfo = await this.$axios.put(
+            `distributorInfo/${this.idDistributor}`,
+            {
+              lang: this.longitude,
+              lat: this.latitude,
+              libraryName: this.libraryName,
+              distributorPhoto: this.distributorPhoto,
+              distributorBio: this.distributorBio,
+              userId: this.userId,
+            }
+          )
+
+          const updateUserInfo = await this.$axios.put(`user/${this.userId}`, {
+            userName: this.username,
+            phone: this.phone,
+            provinceId: this.provinceId * 1,
+          })
+
+          this.updateDistributorDialog = false
+          this.getDistributors()
+        }
+      } catch (error) {
+        console.log(error.response)
+      }
+    },
   },
 }
 </script>

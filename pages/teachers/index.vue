@@ -130,6 +130,112 @@
       </v-card>
     </v-dialog>
 
+    <v-dialog
+      v-model="updateTeacherDialog"
+      max-width="750px"
+      transition="slide-y-transition"
+      persistent
+    >
+      <v-card color="secondary" class="shadow-1 radius-1 pa-10">
+        <v-toolbar color="primary" class="shadow-1 radius-1 mb-10">
+          <h4>تحديث الاستاذة</h4>
+          <v-spacer />
+          <v-btn color="error" icon @click="closeUpdateDialog">
+            <v-icon>close</v-icon>
+          </v-btn>
+        </v-toolbar>
+        <v-form
+          ref="updateTeacherRef"
+          v-model="updateTeacherModel"
+          lazy-validation
+          @submit.prevent="updateTeachers"
+        >
+          <v-row>
+            <v-col cols="12" sm="12" md="6" lg="6" xl="6">
+              <v-text-field
+                v-model="username"
+                prepend-inner-icon="person"
+                color="text"
+                outlined
+                label="اسم المستخدم"
+                :rules="rules"
+              ></v-text-field>
+            </v-col>
+
+            <v-col cols="12" sm="12" md="6" lg="6" xl="6">
+              <v-text-field
+                v-model="phone"
+                prepend-inner-icon="drag_indicator"
+                color="text"
+                outlined
+                label="رقم الهاتف"
+                :rules="rules"
+              ></v-text-field>
+            </v-col>
+
+            <v-col cols="12" sm="12" md="4" lg="4" xl="4">
+              <v-text-field
+                v-model="specialty"
+                prepend-inner-icon="menu_book"
+                color="text"
+                outlined
+                label="التخصص"
+                :rules="rules"
+              ></v-text-field>
+            </v-col>
+
+            <v-col cols="12" sm="12" md="4" lg="4" xl="4">
+              <v-text-field
+                v-model="schoolName"
+                prepend-inner-icon="title"
+                color="text"
+                outlined
+                label="اسم المدرسة"
+                :rules="rules"
+              ></v-text-field>
+            </v-col>
+
+            <v-col cols="12" sm="12" md="4" lg="4" xl="4">
+              <v-select
+                v-model="provinceId"
+                prepend-inner-icon="map"
+                color="text"
+                outlined
+                label="المحافظة"
+                :rules="rules"
+                :items="provinces"
+                item-color="text"
+                item-value="idProvince"
+                item-text="provinceName"
+              ></v-select>
+            </v-col>
+
+            <v-col cols="12">
+              <v-textarea
+                v-model="bio"
+                prepend-inner-icon="format_size"
+                color="text"
+                outlined
+                label="عن الاستاذ"
+                :rules="rules"
+              ></v-textarea>
+            </v-col>
+          </v-row>
+
+          <v-btn
+            color="success"
+            large
+            block
+            depressed
+            :disabled="!updateTeacherModel"
+            type="submit"
+          >
+            حفظ المعلومات
+          </v-btn>
+        </v-form>
+      </v-card>
+    </v-dialog>
+
     <v-data-table
       :headers="headers"
       :items.sync="teachers"
@@ -182,6 +288,10 @@
       </template>
 
       <template #[`item.actions`]="{ item }">
+        <v-btn color="warning" icon @click="openUpdateDialog(item)">
+          <v-icon>edit</v-icon>
+        </v-btn>
+
         <v-btn color="error" icon @click="deleteTeachers(item)">
           <v-icon>delete</v-icon>
         </v-btn>
@@ -215,6 +325,8 @@ export default {
 
     createTeacherDialog: false,
     createTeacherModel: false,
+    updateTeacherDialog: false,
+    updateTeacherModel: false,
 
     provinceId: null,
     username: null,
@@ -226,6 +338,8 @@ export default {
     schoolName: null,
     bio: null,
     photoPath: null,
+    idTeacherInfo: null,
+    userId: null,
     rules: [(v) => !!v || 'لا يمكن ترك الحقل فارغ'],
   }),
 
@@ -314,6 +428,56 @@ export default {
         } catch (error) {
           console.log(error.response)
         }
+      }
+    },
+
+    openUpdateDialog(item) {
+      console.log(item)
+      this.username = item.userName
+      this.phone = item.phone
+      this.specialty = item.specialty
+      this.schoolName = item.schoolName
+      this.provinceId = item.provinceId
+      this.bio = item.bio
+      this.idTeacherInfo = item.idTeacher
+      this.userId = item.userId
+      this.updateTeacherDialog = true
+    },
+
+    closeUpdateDialog() {
+      this.username = null
+      this.phone = null
+      this.specialty = null
+      this.schoolName = null
+      this.provinceId = null
+      this.bio = null
+      this.idTeacherInfo = null
+      this.userId = null
+      this.updateTeacherDialog = false
+    },
+
+    async updateTeachers() {
+      try {
+        const updateTeacherInfo = await this.$axios.put(
+          `teacherInfo/${this.idTeacherInfo}`,
+          {
+            specialty: this.specialty,
+            schoolName: this.schoolName,
+            bio: this.bio,
+            userId: this.userId,
+          }
+        )
+
+        const updateUserInfo = await this.$axios.put(`user/${this.userId}`, {
+          userName: this.username,
+          phone: this.phone,
+          provinceId: this.provinceId
+        })
+
+        this.getTeachers()
+        this.closeUpdateDialog()
+      } catch (error) {
+        console.log(error.response)
       }
     },
   },
