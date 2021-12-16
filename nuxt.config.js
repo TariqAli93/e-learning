@@ -30,6 +30,11 @@ export default {
     '~/plugins/VueWysiwyg.js'
   ],
 
+  server: {
+    port: 2323,
+    host: '0'
+  },
+
   components: true,
 
   loading: '~/components/loading.vue',

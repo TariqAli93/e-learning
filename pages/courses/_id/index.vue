@@ -326,6 +326,22 @@
                   <v-btn
                     icon
                     color="text"
+                    v-bind="attrs"
+                    class="mr-2"
+                    v-on="on"
+                    @click="$router.push(`homework`)"
+                  >
+                    <v-icon>auto_stories</v-icon>
+                  </v-btn>
+                </template>
+                <span class="primary--text">الواجبات</span>
+              </v-tooltip>
+
+              <v-tooltip bottom transition="slide-y-transition" color="text">
+                <template #activator="{ on, attrs }">
+                  <v-btn
+                    icon
+                    color="text"
                     class="mr-2"
                     v-bind="attrs"
                     v-on="on"
