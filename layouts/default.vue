@@ -3,7 +3,9 @@
     <NavBar />
     <v-main class="pt-10">
       <v-container>
-        <Nuxt />
+        <transition name="slide-y-reverse-transition">
+          <Nuxt />
+        </transition>
       </v-container>
     </v-main>
 

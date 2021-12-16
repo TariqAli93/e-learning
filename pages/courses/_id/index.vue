@@ -244,7 +244,7 @@
           <v-toolbar flat color="primary" class="shadow-1 radius-1">
             <div class="d-flex align-center justify-evenly" style="width: 100%">
               <v-toolbar-title style="flex: 1 1 auto"
-                >الفيديوات</v-toolbar-title
+                >{{courseName}}</v-toolbar-title
               >
               <v-text-field
                 v-model="search"
@@ -272,6 +272,22 @@
                   </v-btn>
                 </template>
                 <span class="primary--text">اضافة فيديو</span>
+              </v-tooltip>
+
+              <v-tooltip bottom transition="slide-y-transition" color="text">
+                <template #activator="{ on, attrs }">
+                  <v-btn
+                    icon
+                    color="text"
+                    v-bind="attrs"
+                    class="mr-2"
+                    v-on="on"
+                    @click="$router.push(`library`)"
+                  >
+                    <v-icon>library_books</v-icon>
+                  </v-btn>
+                </template>
+                <span class="primary--text">المكتبة</span>
               </v-tooltip>
 
               <v-tooltip bottom transition="slide-y-transition" color="text">
@@ -380,6 +396,7 @@ export default {
       idChoiceCorrect: null,
       idChoiceWrong: null,
       idChoiceWrong2: null,
+      courseName: null,
     }
   },
 
@@ -389,15 +406,13 @@ export default {
 
   methods: {
     async getVideos() {
-      this.$nuxt.$loading.start()
       try {
         const courseId = await this.$route.params.id
         const course = await this.$axios.get(`course/${courseId}`)
         this.videos = course.data.CourseVideo
-        this.$nuxt.$loading.finish()
+        this.courseName = course.data.courseTitle
       } catch (error) {
         console.error(error.response)
-        this.$nuxt.$loading.finish()
       }
     },
 
@@ -460,7 +475,7 @@ export default {
     openQuizDialog(item) {
       this.videoId = item.idCourseVideo
       this.addQuizDialog = true
-      console.log(item);
+      console.log(item)
       if (item.quiz !== undefined) {
         const quiz = item.quiz
         const choices = quiz.Choice
@@ -475,9 +490,15 @@ export default {
         )[1].questionChoice
 
         this.idQuiz = quiz.idQuiz
-        this.idChoiceCorrect = choices.filter((choice) => choice.correctAnswer)[0].idChoice
-        this.idChoiceWrong = choices.filter((choice) => !choice.correctAnswer)[0].idChoice
-        this.idChoiceWrong2 = choices.filter((choice) => !choice.correctAnswer)[1].idChoice
+        this.idChoiceCorrect = choices.filter(
+          (choice) => choice.correctAnswer
+        )[0].idChoice
+        this.idChoiceWrong = choices.filter(
+          (choice) => !choice.correctAnswer
+        )[0].idChoice
+        this.idChoiceWrong2 = choices.filter(
+          (choice) => !choice.correctAnswer
+        )[1].idChoice
 
         this.quizQuestion = quiz.quizQuestion
         this.isUpdateQuiz = true
@@ -542,23 +563,32 @@ export default {
               createdBy: this.$auth.user.idUser * 1,
             })
 
-            const currectAnswer = await this.$axios.put(`choice/${this.idChoiceCorrect}`, {
-              questionChoice: this.quizAnswerCurrect,
-              correctAnswer: true,
-              quizId: quiz.data.idQuiz,
-            })
+            const currectAnswer = await this.$axios.put(
+              `choice/${this.idChoiceCorrect}`,
+              {
+                questionChoice: this.quizAnswerCurrect,
+                correctAnswer: true,
+                quizId: quiz.data.idQuiz,
+              }
+            )
 
-            const wrongAnswer = await this.$axios.put(`choice/${this.idChoiceWrong}`, {
-              questionChoice: this.quizAnswerWrong,
-              correctAnswer: false,
-              quizId: quiz.data.idQuiz,
-            })
+            const wrongAnswer = await this.$axios.put(
+              `choice/${this.idChoiceWrong}`,
+              {
+                questionChoice: this.quizAnswerWrong,
+                correctAnswer: false,
+                quizId: quiz.data.idQuiz,
+              }
+            )
 
-            const wrongAnswer2 = await this.$axios.put(`choice/${this.idChoiceWrong2}`, {
-              questionChoice: this.quizAnswerWrong2,
-              correctAnswer: false,
-              quizId: quiz.data.idQuiz,
-            })
+            const wrongAnswer2 = await this.$axios.put(
+              `choice/${this.idChoiceWrong2}`,
+              {
+                questionChoice: this.quizAnswerWrong2,
+                correctAnswer: false,
+                quizId: quiz.data.idQuiz,
+              }
+            )
 
             this.addQuizDialog = false
             this.getVideos()
