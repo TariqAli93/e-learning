@@ -81,6 +81,11 @@ export default {
           to: '/promo',
         },
         {
+          title: 'الاشعارات',
+          icon: 'notifications',
+          to: '/notifications',
+        },
+        {
           title: 'التقارير المالية',
           icon: 'table_chart',
           to: '/reports',

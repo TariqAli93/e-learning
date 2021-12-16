@@ -139,79 +139,92 @@ export default {
         {
           text: 'المعرف',
           value: 'idCourse',
-          sortable: false,
+          sortable: true,
           align: 'start',
-          width: 150,
         },
         {
           text: 'الصورة',
           value: 'coursePath',
-          sortable: false,
+          sortable: true,
           align: 'start',
-          width: 150,
         },
         {
           text: 'عنوان الكورس',
           value: 'courseTitle',
-          sortable: false,
+          sortable: true,
           align: 'start',
-          width: 150,
         },
         {
           text: 'وصف الكورس',
           value: 'courseDescription',
-          sortable: false,
+          sortable: true,
           align: 'start',
-          width: 150,
         },
         {
           text: 'سعر الكورس',
           value: 'coursePrice',
-          sortable: false,
+          sortable: true,
           align: 'start',
-          width: 150,
         },
         {
           text: 'المادة',
           value: 'subject.subjectName',
-          sortable: false,
+          sortable: true,
           align: 'start',
-          width: 150,
         },
         {
           text: 'الصف',
           value: 'class.className',
-          sortable: false,
+          sortable: true,
           align: 'start',
-          width: 200,
         },
         {
           text: 'التقيم',
           value: 'courseRate',
-          sortable: false,
+          sortable: true,
           align: 'start',
-          width: 150,
         },
         {
           text: 'سعر المنصة',
           value: 'platformPrice',
-          sortable: false,
+          sortable: true,
           align: 'start',
-          width: 150,
         },
         {
           text: 'السعر الكلي',
           value: 'totalPrice',
-          sortable: false,
+          sortable: true,
           align: 'start',
-          width: 150,
         },
         {
           text: 'السعر المتبقي',
           value: 'remainingPrice',
-          sortable: false,
+          sortable: true,
           align: 'start',
-          width: 150,
+        },
+        {
+          text: 'المسجلين',
+          value: 'EnrolledStudents',
+          sortable: true,
+          align: 'start',
+        },
+        {
+          text: 'قيد الانتضار',
+          value: 'PendingStudents',
+          sortable: true,
+          align: 'start',
+        },
+        {
+          text: 'المقبولين',
+          value: 'ActiveStudents',
+          sortable: true,
+          align: 'start',
+        },
+        {
+          text: 'رقم هاتف الاستاذ',
+          value: 'user.phone',
+          sortable: true,
+          align: 'start',
         },
       ],
 
@@ -241,20 +254,16 @@ export default {
 
   methods: {
     async getFinancialDetails() {
-      this.$nuxt.$loading.start()
       try {
         const financial = await this.$axios.get('financialDetails')
         this.financialDetails = financial.data
         console.log(financial.data)
-        this.$nuxt.$loading.finish()
       } catch (error) {
         console.error(error.response)
-        this.$nuxt.$loading.finish()
       }
     },
 
     async filterFinancialDetails(event) {
-      this.$nuxt.$loading.start()
       const data = Object.fromEntries(new FormData(event.target))
       const filters = {}
 
@@ -282,34 +291,26 @@ export default {
           `financialDetails?${queryString}`
         )
         this.financialDetails = financial.data
-        this.$nuxt.$loading.finish()
       } catch (error) {
         console.error(error.response)
-        this.$nuxt.$loading.finish()
       }
     },
 
     async getTeachers() {
-      this.$nuxt.$loading.start()
       try {
         const teachers = await this.$axios.get('userRoles/3')
         this.teachers = teachers.data
-        this.$nuxt.$loading.finish()
       } catch (error) {
         console.log(error.response)
-        this.$nuxt.$loading.finish()
       }
     },
 
     async getSubjects() {
-      this.$nuxt.$loading.start()
       try {
         const subjects = await this.$axios.get('subjects')
         this.subjects = subjects.data
-        this.$nuxt.$loading.finish()
       } catch (error) {
         console.log(error.response)
-        this.$nuxt.$loading.finish()
       }
     },
 
@@ -319,7 +320,7 @@ export default {
         path: `reports/${idCourse}`,
         query: {
           p: item.item.platformPriceTotal,
-          r: item.item.remainingPrice
+          r: item.item.remainingPrice,
         },
       })
     },

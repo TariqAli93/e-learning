@@ -27,20 +27,7 @@
           @submit.prevent="createPromoCode"
         >
           <v-row>
-            <v-col cols="12" sm="12" md="6" lg="6" xl="6">
-              <v-text-field
-                v-model="code"
-                readonly
-                outlined
-                color="text"
-                label="كود الخصم"
-                append-icon="add_circle_outline"
-                :rules="rules"
-                @click:append="generateNewCode"
-              ></v-text-field>
-            </v-col>
-
-            <v-col cols="12" sm="12" md="6" lg="6" xl="6">
+            <v-col cols="12">
               <v-text-field
                 v-model="usedCount"
                 outlined
@@ -70,7 +57,7 @@
                 item-text="userName"
                 item-value="idUser"
                 outlined
-                label="الموزع"
+                label="الاستاذ"
                 color="text"
                 :rules="rules"
               ></v-select>
@@ -135,6 +122,35 @@
         ></v-data-table>
       </v-card>
     </v-dialog>
+
+    <v-dialog
+      v-model="dialog"
+      persistent
+      max-width="750px"
+      transition="slide-y-transition"
+    >
+      <v-card color="secondary" class="shadow-1 radius-1 pa-10">
+        <v-toolbar flat color="primary" class="shadow-1 radius-1 mb-10">
+          <div class="d-flex align-center justify-evenly" style="width: 100%">
+            <v-toolbar-title style="flex: 1 1 auto"
+              >الاكواد الجديدة</v-toolbar-title
+            >
+
+            <v-spacer />
+
+            <v-btn icon color="error" @click="dialog = false">
+              <v-icon>close</v-icon>
+            </v-btn>
+          </div>
+        </v-toolbar>
+        <v-list nav dense color="transparent">
+          <v-list-item v-for="codes in newCodes" :key="codes" color="transparent" style="border-bottom: 1px solid rgba(0, 0, 0, 0.20); border-radius: 0 !important">
+            <v-list-item-title>{{ codes.code }}</v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-card>
+    </v-dialog>
+
     <v-data-table
       :headers="headers"
       :items="coupons"
@@ -199,6 +215,7 @@ export default {
       newCodeForm: false,
       newCodeDialog: false,
       studentsUsedCodeDialog: false,
+      dialog: false,
       studentsUsedCodeHeaders: [
         {
           text: 'المعرف',
@@ -283,6 +300,7 @@ export default {
       userId: '',
       courseId: '',
       rules: [(v) => !!v || 'لا يمكن ترك الحقل فارغ'],
+      newCodes: [],
     }
   },
 
@@ -295,7 +313,7 @@ export default {
   methods: {
     generateNewCode() {
       const code = Math.random().toString(15).substr(2, 8)
-      this.code = code
+      return code
     },
 
     async getCoupons() {
@@ -323,7 +341,7 @@ export default {
 
     async getDistributors() {
       try {
-        const distributors = await this.$axios.get('userRoles/4')
+        const distributors = await this.$axios.get('userRoles/3')
         this.distributors = distributors.data
       } catch (error) {
         console.log(error.response)
@@ -333,13 +351,21 @@ export default {
     async createPromoCode() {
       try {
         if (this.$refs.newCodeRef.validate()) {
-          const promo = await this.$axios.post('addPromoCode', {
-            code: this.code,
-            usedCount: this.usedCount * 1,
-            discountAmount: this.discountAmount * 1,
-            userId: this.userId,
-            courseId: this.courseId,
-          })
+          const usedCount = []
+          let data = {}
+          for (let i = 0; i < this.usedCount; i++) {
+            data = {
+              code: this.generateNewCode(),
+              usedCount: this.usedCount * 1,
+              discountAmount: this.discountAmount * 1,
+              userId: this.userId,
+              courseId: this.courseId,
+            }
+
+            usedCount.push(data)
+            const promo = await this.$axios.post('addManyPromoCode', data)
+            this.newCodes.push({ code: data.code })
+          }
 
           this.$toast.success('تم انشاء الكود', {
             duration: 3000,
@@ -348,6 +374,7 @@ export default {
 
           this.newCodeDialog = false
           this.getCoupons()
+          this.dialog = true
         }
       } catch (error) {
         console.log(error.response)

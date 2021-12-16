@@ -141,7 +141,7 @@
         </div>
       </v-toolbar>
 
-      <v-row>
+      <v-row v-if="courseLibraries.length > 0">
         <v-col
           v-for="file in courseLibraries"
           :key="file.idLibrary"
@@ -176,6 +176,10 @@
           </v-card>
         </v-col>
       </v-row>
+
+      <v-alert v-else colored-border type="warning" color="warning" class="shadow-1 radius-1">
+        <h1>المكتبة فارغة</h1>
+      </v-alert>
     </v-card>
   </div>
 </template>

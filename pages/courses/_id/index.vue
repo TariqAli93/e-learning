@@ -233,6 +233,37 @@
       </v-card>
     </v-dialog>
 
+    <v-dialog
+      v-model="dialog"
+      persistent
+      max-width="750px"
+      transition="slide-y-transition"
+    >
+      <v-card color="secondary" class="shadow-1 radius-1 pa-10">
+        <v-toolbar color="primary" class="shadow-1 radius-1 mb-10">
+          <h4>التعليقات</h4>
+
+          <v-spacer />
+
+          <v-btn icon color="accent" @click="dialog = false">
+            <v-icon>close</v-icon>
+          </v-btn>
+        </v-toolbar>
+
+        <v-data-table
+          class="secondary"
+          :headers="commentsHeaders"
+          :items="comments"
+        >
+          <template #[`item.actions`]="{ item }">
+            <v-btn icon color="warning" @click="deleteComment(item)">
+              <v-icon>delete</v-icon>
+            </v-btn>
+          </template>
+        </v-data-table>
+      </v-card>
+    </v-dialog>
+
     <v-card color="secondary" class="shadow-1 radius-1">
       <v-data-table
         :headers="headers"
@@ -243,9 +274,9 @@
         <template #top>
           <v-toolbar flat color="primary" class="shadow-1 radius-1">
             <div class="d-flex align-center justify-evenly" style="width: 100%">
-              <v-toolbar-title style="flex: 1 1 auto"
-                >{{courseName}}</v-toolbar-title
-              >
+              <v-toolbar-title style="flex: 1 1 auto">{{
+                courseName
+              }}</v-toolbar-title>
               <v-text-field
                 v-model="search"
                 color="text"
@@ -334,8 +365,8 @@
             <v-icon>quiz</v-icon>
           </v-btn>
 
-          <v-btn icon color="success" @click="openQuizDialog(item)">
-            <v-icon>menu_book</v-icon>
+          <v-btn icon color="success" @click="initVideoComments(item)">
+            <v-icon>feedback</v-icon>
           </v-btn>
         </template>
       </v-data-table>
@@ -401,6 +432,30 @@ export default {
       idChoiceWrong: null,
       idChoiceWrong2: null,
       courseName: null,
+      dialog: false,
+      comments: [],
+      commentsHeaders: [
+        {
+          text: '#',
+          value: 'idVideoComment',
+        },
+        {
+          text: 'الاسم',
+          value: 'user.userName',
+        },
+        {
+          text: 'التعليق',
+          value: 'userComment',
+        },
+        {
+          text: 'التاريخ',
+          value: 'createdAt',
+        },
+        {
+          text: 'الاجرائات',
+          value: 'actions',
+        },
+      ],
     }
   },
 
@@ -415,9 +470,38 @@ export default {
         const course = await this.$axios.get(`course/${courseId}`)
         this.videos = course.data.CourseVideo
         this.courseName = course.data.courseTitle
-        console.log(course);
       } catch (error) {
         console.error(error.response)
+      }
+    },
+
+    async initVideoComments(item, id = null) {
+      const videoId = id ?? item.idCourseVideo
+      try {
+        const comments = await this.$axios.get(`commentVideoId/${videoId}`)
+        this.comments = comments.data
+        this.dialog = true
+      } catch (error) {
+        console.log(error.response)
+      }
+    },
+
+    async deleteComment(item) {
+      if (confirm('هل تريد حذف التعليق ؟')) {
+        console.log(item)
+        try {
+          const comments = await this.$axios.delete(
+            `videoComment/${item.idVideoComment}`
+          )
+          this.$toast.success('تم حذف التعليق', {
+            duration: 3000,
+            position: 'top-center',
+          })
+
+          this.initVideoComments(item, item.videoId)
+        } catch (error) {
+          console.log(error.response)
+        }
       }
     },
 
