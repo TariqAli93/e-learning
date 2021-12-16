@@ -333,6 +333,10 @@
           <v-btn icon color="info" @click="openQuizDialog(item)">
             <v-icon>quiz</v-icon>
           </v-btn>
+
+          <v-btn icon color="success" @click="openQuizDialog(item)">
+            <v-icon>menu_book</v-icon>
+          </v-btn>
         </template>
       </v-data-table>
     </v-card>
@@ -411,6 +415,7 @@ export default {
         const course = await this.$axios.get(`course/${courseId}`)
         this.videos = course.data.CourseVideo
         this.courseName = course.data.courseTitle
+        console.log(course);
       } catch (error) {
         console.error(error.response)
       }
