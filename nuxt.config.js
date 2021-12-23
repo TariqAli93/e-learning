@@ -79,6 +79,7 @@ export default {
   axios: {
     baseURL: 'http://217.71.201.51/api/'
     // baseURL: 'http://localhost:5000/api'
+    // baseURL: 'http://192.168.35.245:5100/api'
   },
 
   vuetify: {

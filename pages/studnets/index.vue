@@ -307,11 +307,10 @@
       :headers="headers"
       :items.sync="students"
       :items-per-page="15"
-      item-key="courseId"
+      item-key="idUser"
       class="shadow-1 radius-1 pa-5 secondary"
       :search="search"
       loading-text="جاري التحميل"
-      :loading="tableLoading"
     >
       <template #top>
         <v-toolbar flat color="primary" class="shadow-1 radius-1">
@@ -348,14 +347,26 @@
         </v-toolbar>
       </template>
 
-      <template #[`item.actions`]="{ item }">
-        <v-btn color="warning" icon @click="openUpdateDialog(item)">
-          <v-icon>edit</v-icon>
-        </v-btn>
+      <template #[`item.actions`]="{ item, index }">
+        <v-row justify="center" align="center">
+          <v-btn color="warning" icon @click="openUpdateDialog(item)">
+            <v-icon>edit</v-icon>
+          </v-btn>
 
-        <v-btn color="error" icon @click="deleteStudents(item)">
-          <v-icon>delete</v-icon>
-        </v-btn>
+          <v-btn color="error" icon @click="deleteStudents(item)">
+            <v-icon>delete</v-icon>
+          </v-btn>
+
+          <v-switch
+            :key="index"
+            v-model="item.canLogin"
+            value
+            :input-value="item.canLogin"
+            :color="item.canLogin ? 'success' : 'wraning'"
+            :label="item.canLogin ? 'مفعل' : 'مغلق'"
+            @change="changeLoginStatus(item, $event)"
+          ></v-switch>
+        </v-row>
       </template>
     </v-data-table>
   </div>
@@ -372,18 +383,18 @@ export default {
         value: 'students.idStudent',
         sortable: false,
       },
-      { text: 'اسم المستخدم', value: 'user.userName', sortable: false },
-      { text: 'الهاتف', value: 'user.phone', sortable: false },
-      { text: 'اسم المدرسة', value: 'students.schoolName', sortable: false },
-      { text: 'الصف', value: 'class.className', sortable: false },
-      { text: 'المعدل', value: 'students.grade', sortable: false },
-      { text: 'عدد الكورسات', value: 'courses.totalCourses', sortable: false },
+      { text: 'اسم المستخدم', value: 'userName', sortable: false },
+      { text: 'الهاتف', value: 'phone', sortable: false },
+      { text: 'اسم المدرسة', value: 'studentInfo.schoolName', sortable: false },
+      { text: 'الصف', value: 'studentInfo.class.className', sortable: false },
+      { text: 'المعدل', value: 'studentInfo.grade', sortable: false },
+      { text: 'عدد الكورسات', value: 'StudentCourse.length', sortable: false },
       {
         text: 'المحافظة',
-        value: 'user.province.provinceName',
+        value: 'province.provinceName',
         sortable: false,
       },
-      { text: 'الاجرائات', value: 'actions', sortable: false },
+      { text: 'الاجرائات', value: 'actions', sortable: false, width: 200 },
     ],
 
     students: [],
@@ -416,6 +427,7 @@ export default {
     userId: null,
     idStudent: null,
     idClass: null,
+    canLogin: true,
   }),
 
   watch: {
@@ -460,39 +472,10 @@ export default {
     },
 
     async getStudents() {
-      this.$nuxt.$loading.start()
       try {
-        const students = await this.$axios.get(`studentInfos`)
-        const users = []
-
-        for (let i = 0; i < students.data.length; i++) {
-          const user = await this.$axios.get(`user/${students.data[i].userId}`)
-          const courses = await this.$axios.get(
-            `coursesForStudent/${students.data[i].idStudent}`
-          )
-          const classes = await this.$axios.get(`classes`)
-          const filterdClasses = classes.data.filter((cls) => {
-            return cls.idClass === students.data[i].classId
-          })
-
-          users.push({
-            class: {
-              ...filterdClasses.map((cls) => {
-                return {
-                  className: cls.className,
-                  idClass: cls.idClass,
-                }
-              })[0],
-            },
-            courses: { ...courses.data },
-            user: { ...user.data },
-            students: { ...students.data[i] },
-          })
-        }
-
-        this.students = users
-        this.tableLoading = false
-        this.$nuxt.$loading.finish()
+        const students = await this.$axios.get(`userRoles/2`)
+        this.students = students.data
+        console.log(students.data)
       } catch (e) {
         console.error(e.response)
         this.$nuxt.$loading.finish()
@@ -501,7 +484,6 @@ export default {
 
     async createStudents() {
       if (this.$refs.createStudentsRef.validate()) {
-        this.$nuxt.$loading.start()
         try {
           const createUsers = await this.$axios.post('addUser', {
             userName: this.username,
@@ -527,6 +509,21 @@ export default {
       }
     },
 
+    async changeLoginStatus(item, event) {
+      console.log({ item, event })
+      const { idUser } = item
+      this.canLogin = event
+      if (confirm('هل تريد تفعيل الطالب ؟')) {
+        try {
+          const changeStatus = await this.$axios.put(`user/${idUser}`, {
+            canLogin: this.canLogin
+          })
+        } catch (error) {
+          console.log(error)
+        }
+      }
+    },
+
     async deleteStudents(item) {
       if (confirm('هل تريد حذف الطالب ؟')) {
         try {
@@ -542,15 +539,16 @@ export default {
 
     openUpdateDialog(item) {
       this.updateStudentDialog = true
-      this.username = item.user.userName
-      this.phone = item.user.phone
-      this.grade = item.students.grade
-      this.schoolName = item.students.schoolName
-      this.provinceId = item.user.provinceId
-      this.dob = item.students.dob
-      this.idClass = item.class.idClass
-      this.idStudent = item.students.idStudent
-      this.userId = item.students.userId
+      console.log(item);
+      this.username = item.userName
+      this.phone = item.phone
+      this.grade = item.studentInfo.grade
+      this.schoolName = item.studentInfo.schoolName
+      this.provinceId = item.provinceId
+      this.dob = item.studentInfo.dob
+      this.idClass = item.studentInfo.classId
+      this.idStudent = item.studentInfo.idStudent
+      this.userId = item.idUser
     },
 
     closeUpdateDialog() {
@@ -574,16 +572,16 @@ export default {
             {
               schoolName: this.schoolName,
               dob: this.dob,
-              grade: this.grade,
-              classId: this.idClass,
-              userId: this.userId,
+              grade: parseFloat(this.grade * 1),
+              classId: this.idClass * 1,
+              userId: this.userId * 1,
             }
           )
 
           const updateUsertInfo = await this.$axios.put(`user/${this.userId}`, {
             userName: this.username,
             phone: this.phone,
-            provinceId: this.provinceId,
+            provinceId: this.provinceId * 1,
           })
 
           this.closeUpdateDialog()

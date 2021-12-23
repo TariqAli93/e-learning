@@ -38,7 +38,7 @@
       <div class="navbar__inner__bottom secondary">
         <v-container class="pa-0">
           <v-toolbar flat color="transparent" dense>
-            <NavBarList />
+            <NavBarList :role-id="role" />
           </v-toolbar>
         </v-container>
       </div>
@@ -49,6 +49,12 @@
 <script>
 export default {
   name: 'NavBar',
+  props: {
+    role: {
+      type: Number,
+      required: true
+    }
+  }
 }
 </script>
 

@@ -1,6 +1,6 @@
 <template>
   <v-app dark>
-    <NavBar />
+    <NavBar :role="role" />
     <v-main class="pt-10">
       <v-container>
         <transition name="slide-y-reverse-transition">
@@ -31,8 +31,16 @@
 <script>
 import 'material-design-icons-iconfont/dist/material-design-icons.css'
 export default {
+  computed: {
+    role() {
+      return this.$auth.user.roleId ?? 1
+    },
+  },
   mounted() {
-    this.$auth.$storage.syncUniversal('user', this.$auth.$storage.getUniversal('user'))
+    this.$auth.$storage.syncUniversal(
+      'user',
+      this.$auth.$storage.getUniversal('user')
+    )
   },
 }
 </script>

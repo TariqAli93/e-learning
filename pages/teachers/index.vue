@@ -236,6 +236,94 @@
       </v-card>
     </v-dialog>
 
+    <v-dialog
+      v-model="addAssistantDialog"
+      persistent
+      max-width="750px"
+      transition="slide-y-transition"
+    >
+      <v-card color="secondary" class="shadow-1 radius-1 pa-10">
+        <v-toolbar color="primary" class="shadow-1 radius-1 mb-10">
+          <h4>اضافة مساعد استاذ</h4>
+          <v-spacer />
+          <v-btn
+            color="error"
+            icon
+            @click="
+              addAssistantDialog = false
+              userId = null
+            "
+          >
+            <v-icon>close</v-icon>
+          </v-btn>
+        </v-toolbar>
+
+        <v-form
+          ref="assistantRef"
+          v-model="assistantForm"
+          lazy-validation
+          @submit.prevent="saveAssistant"
+        >
+          <v-row>
+            <v-col cols="12">
+              <v-select
+                v-model="assistantId"
+                label="المساعدين"
+                outlined
+                color="white"
+                :items="assistants"
+                item-text="userName"
+                item-value="idUser"
+                item-color="white"
+                :rules="[(v) => !!v || 'لا يمكن ترك الحقل فارغ']"
+              ></v-select>
+            </v-col>
+          </v-row>
+
+          <v-btn
+            block
+            large
+            color="success"
+            depressed
+            type="submit"
+            :disabled="!assistantForm"
+          >
+            حفظ المعلومات
+          </v-btn>
+        </v-form>
+      </v-card>
+    </v-dialog>
+
+    <v-dialog
+      v-model="AssistanceTeacherDialog"
+      persistent
+      max-width="750px"
+      transition="slide-y-transition"
+    >
+      <v-card color="secondary" class="shadow-1 radius-1 pa-10">
+        <v-toolbar color="primary" class="shadow-1 radius-1 mb-10">
+          <h4>المساعدين</h4>
+          <v-spacer />
+          <v-btn color="error" icon @click="AssistanceTeacherDialog = false">
+            <v-icon>close</v-icon>
+          </v-btn>
+        </v-toolbar>
+
+        <v-data-table
+          :headers="AssistanceTeacherHeaders"
+          :items.sync="AssistanceTeacher"
+          :items-per-page="15"
+          class="pa-5 secondary"
+        >
+        <template #[`item.actions`]="{ item }">
+          <v-btn color="error" icon @click="deleteAssistanceTeacher(item)">
+            <v-icon>delete</v-icon>
+          </v-btn>
+        </template>
+        </v-data-table>
+      </v-card>
+    </v-dialog>
+
     <v-data-table
       :headers="headers"
       :items.sync="teachers"
@@ -295,6 +383,21 @@
         <v-btn color="error" icon @click="deleteTeachers(item)">
           <v-icon>delete</v-icon>
         </v-btn>
+
+        <v-btn
+          color="info"
+          icon
+          @click="
+            addAssistantDialog = true
+            userId = item.userId
+          "
+        >
+          <v-icon>assistant</v-icon>
+        </v-btn>
+
+        <v-btn color="success" icon @click="openAssistantListDialog(item)">
+          <v-icon>view_list</v-icon>
+        </v-btn>
       </template>
     </v-data-table>
   </div>
@@ -308,7 +411,7 @@ export default {
       {
         text: 'المعرف',
         align: 'start',
-        value: 'idTeacher',
+        value: 'userId',
         sortable: false,
       },
       { text: 'الصورة', value: 'photoPath', sortable: false },
@@ -322,6 +425,8 @@ export default {
 
     teachers: [],
     provinces: [],
+    assistants: [],
+    assistantId: null,
 
     createTeacherDialog: false,
     createTeacherModel: false,
@@ -341,11 +446,27 @@ export default {
     idTeacherInfo: null,
     userId: null,
     rules: [(v) => !!v || 'لا يمكن ترك الحقل فارغ'],
+    addAssistantDialog: false,
+    assistantForm: false,
+    AssistanceTeacher: [],
+    AssistanceTeacherDialog: false,
+    AssistanceTeacherHeaders: [
+      {
+        text: 'المعرف',
+        align: 'start',
+        value: 'assistance.idUser',
+        sortable: false,
+      },
+      { text: 'اسم المستخدم', value: 'assistance.userName', sortable: false },
+      { text: 'رقم الهاتف', value: 'assistance.phone', sortable: false },
+      { text: 'الاجرائات', value: 'actions', sortable: false },
+    ],
   }),
 
   mounted() {
     this.getProvinces()
     this.getTeachers()
+    this.getAssistants()
   },
 
   methods: {
@@ -357,6 +478,15 @@ export default {
       try {
         const provinces = await this.$axios.get('provinces')
         this.provinces = provinces.data
+      } catch (error) {
+        console.log(error.response)
+      }
+    },
+
+    async getAssistants() {
+      try {
+        const assistants = await this.$axios.get('userRoles/6')
+        this.assistants = assistants.data
       } catch (error) {
         console.log(error.response)
       }
@@ -377,6 +507,7 @@ export default {
         }
 
         this.teachers = users
+        console.log(users)
         this.$nuxt.$loading.finish()
       } catch (e) {
         console.error(e.response)
@@ -432,7 +563,6 @@ export default {
     },
 
     openUpdateDialog(item) {
-      console.log(item)
       this.username = item.userName
       this.phone = item.phone
       this.specialty = item.specialty
@@ -471,7 +601,7 @@ export default {
         const updateUserInfo = await this.$axios.put(`user/${this.userId}`, {
           userName: this.username,
           phone: this.phone,
-          provinceId: this.provinceId
+          provinceId: this.provinceId,
         })
 
         this.getTeachers()
@@ -480,6 +610,42 @@ export default {
         console.log(error.response)
       }
     },
+
+    async saveAssistant() {
+      if (this.$refs.assistantRef.validate()) {
+        console.log(this.userId)
+        try {
+          const create = await this.$axios.post('addAssistanceTeacher', {
+            teacherId: this.userId * 1,
+            assistanceId: this.assistantId * 1,
+          })
+          this.addAssistantDialog = false
+          this.userId = null
+          this.getTeachers()
+        } catch (error) {
+          console.log(error)
+        }
+      }
+    },
+
+    openAssistantListDialog(item) {
+      this.AssistanceTeacher = item.user.AssistanceTeacher
+      this.AssistanceTeacherDialog = true
+    },
+
+    async deleteAssistanceTeacher(item) {
+      const { idAssistanceTeacher } = item
+      if(confirm('هل تريد ازالة المساعد من الاستاذ ؟')) {
+        try {
+          const remove = await this.$axios.delete(`assistanceTeacher/${idAssistanceTeacher}`)
+          this.AssistanceTeacherDialog = false
+          this.AssistanceTeacher = []
+          this.getTeachers()
+        } catch (error) {
+          console.log(error)
+        }
+      }
+    }
   },
 }
 </script>

@@ -31,7 +31,7 @@
               <v-text-field
                 v-model="usedCount"
                 outlined
-                label="عدد المستفيدين"
+                label="عدد الاكواد"
                 color="text"
                 type="number"
                 :rules="rules"
@@ -356,7 +356,7 @@ export default {
           for (let i = 0; i < this.usedCount; i++) {
             data = {
               code: this.generateNewCode(),
-              usedCount: this.usedCount * 1,
+              usedCount: 1,
               discountAmount: this.discountAmount * 1,
               userId: this.userId,
               courseId: this.courseId,

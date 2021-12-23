@@ -141,90 +141,105 @@ export default {
           value: 'idCourse',
           sortable: true,
           align: 'start',
+          width: 200
         },
         {
           text: 'الصورة',
           value: 'coursePath',
           sortable: true,
           align: 'start',
+          width: 200
         },
         {
           text: 'عنوان الكورس',
           value: 'courseTitle',
           sortable: true,
           align: 'start',
+          width: 200
         },
         {
           text: 'وصف الكورس',
           value: 'courseDescription',
           sortable: true,
           align: 'start',
+          width: 200
         },
         {
           text: 'سعر الكورس',
           value: 'coursePrice',
           sortable: true,
           align: 'start',
+          width: 200
         },
         {
           text: 'المادة',
           value: 'subject.subjectName',
           sortable: true,
           align: 'start',
+          width: 200
         },
         {
           text: 'الصف',
           value: 'class.className',
           sortable: true,
           align: 'start',
+          width: 200
         },
         {
           text: 'التقيم',
           value: 'courseRate',
           sortable: true,
           align: 'start',
+          width: 200
         },
         {
           text: 'سعر المنصة',
           value: 'platformPrice',
           sortable: true,
           align: 'start',
+          width: 200
         },
         {
           text: 'السعر الكلي',
           value: 'totalPrice',
           sortable: true,
           align: 'start',
+          width: 200
         },
         {
           text: 'السعر المتبقي',
           value: 'remainingPrice',
           sortable: true,
           align: 'start',
+          width: 200
         },
         {
           text: 'المسجلين',
           value: 'EnrolledStudents',
           sortable: true,
           align: 'start',
+          width: 200
         },
         {
           text: 'قيد الانتضار',
           value: 'PendingStudents',
           sortable: true,
           align: 'start',
+          width: 200
         },
         {
           text: 'المقبولين',
           value: 'ActiveStudents',
           sortable: true,
           align: 'start',
+          width: 200
         },
         {
           text: 'رقم هاتف الاستاذ',
           value: 'user.phone',
           sortable: true,
           align: 'start',
+          width: 200
         },
       ],
 

@@ -106,7 +106,7 @@
         <v-menu transition="slide-y-transition">
           <template #activator="{ on, attrs }">
             <v-btn color="warning" icon small v-bind="attrs" v-on="on">
-              <v-icon>more_vert</v-icon>
+              <v-icon>menu</v-icon>
             </v-btn>
           </template>
 

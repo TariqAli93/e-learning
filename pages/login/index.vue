@@ -95,6 +95,7 @@ export default {
         // 784356
         const showMessage = this.$toast.show('جاري تسجيل الدخول...', {
           position: 'top-center',
+          duration: 3000
         })
 
         try {
@@ -105,18 +106,28 @@ export default {
             },
           })
 
-          this.$auth.setUser(this.parseToken(user.data.token))
-          this.$auth.strategy.token.set(user.data.token)
-          this.$auth.$storage.setUniversal('user',this.parseToken(user.data.token))
 
-          showMessage.goAway()
+          if(this.parseToken(user.data.token).roleId === 1 || this.parseToken(user.data.token).roleId === 5) {
+            this.$auth.setUser(this.parseToken(user.data.token))
+            this.$auth.strategy.token.set(user.data.token)
+            this.$auth.$storage.setUniversal('user',this.parseToken(user.data.token))
+  
+            showMessage.goAway()
+  
+            this.$nuxt.$loading.finish()
+  
+            this.$toast.success('تم تسجيل الدخول', {
+              duration: 3000,
+              position: 'top-center',
+            })
+          } else {
+            this.$toast.error('لا تملك الصلاحيات لاكمال تسجيل الدخول', {
+              duration: 3000,
+              position: 'top-center',
+            })
+            this.$auth.logout()
+          }
 
-          this.$nuxt.$loading.finish()
-
-          this.$toast.success('تم تسجيل الدخول', {
-            duration: 3000,
-            position: 'top-center',
-          })
         } catch (e) {
           this.$toast.error('خطأ في تسجيل الدخول', {
             duration: 3000,
