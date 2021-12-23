@@ -1,0 +1,20 @@
+{
+  "Breadcrumbs": {
+    "description": "Auto imported from components/Breadcrumbs.vue"
+  },
+  "HomeCards": {
+    "description": "Auto imported from components/HomeCards.vue"
+  },
+  "NavBar": {
+    "description": "Auto imported from components/NavBar.vue"
+  },
+  "NavBarList": {
+    "description": "Auto imported from components/NavBarList.vue"
+  },
+  "NavBarLogo": {
+    "description": "Auto imported from components/NavBarLogo.vue"
+  },
+  "Loading": {
+    "description": "Auto imported from components/loading.vue"
+  }
+}
