@@ -97,7 +97,7 @@
                 :rules="rules"
                 :items="teachers"
                 item-text="userName"
-                item-value="roleId"
+                item-value="idUser"
               ></v-select>
             </v-col>
 

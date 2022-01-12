@@ -1,5 +1,16 @@
 <template>
   <div id="CoursesPage">
+    <v-dialog v-model="distributorsDialog" transition="slide-y-transition" max-width="750px">
+      <v-card color="secondary" class="shadow-1 radius-1 pa-10">
+        <v-toolbar color="primary" class="shadow-1 radius-1 mb-10">
+          <h4>الموزعين</h4>
+          <v-spacer />
+          <v-btn color="error" icon @click="distributorsDialog = false">
+            <v-icon>close</v-icon>
+          </v-btn>
+        </v-toolbar>
+      </v-card>
+    </v-dialog>
     <!-- course table -->
     <v-data-table
       :headers="headers"
@@ -76,6 +87,10 @@
         <v-btn icon color="error" @click.prevent="deleteCourse(item)">
           <v-icon>delete</v-icon>
         </v-btn>
+
+        <v-btn icon color="info" @click.prevent="getDistributors(item)">
+          <v-icon>people</v-icon>
+        </v-btn>
       </template>
     </v-data-table>
     <!-- course table -->
@@ -90,6 +105,7 @@ export default {
       search: '',
       dates: [],
       datesMenu: false,
+      distributorsDialog: false,
       headers: [
         {
           text: 'الصورة',
@@ -105,7 +121,7 @@ export default {
         { text: 'سعر المنصة', value: 'platformPrice', sortable: false },
         { text: 'المادة', value: 'subject.subjectName', sortable: false },
         { text: 'التاريخ', value: 'createdAt', sortable: false },
-        { text: 'الاجرائات', value: 'actions', sortable: false },
+        { text: 'الاجرائات', value: 'actions', sortable: false, width: 200 },
       ],
 
       courses: [],
@@ -153,6 +169,23 @@ export default {
 
     SaveDate(date) {
       this.$refs.datesMenuRef.save(date)
+    },
+
+    async getDistributors(item) {
+      const { idCourse } = item
+      this.$nuxt.$loading.start()
+      try {
+        const dist = await this.$axios.get(`courseDistributors/${idCourse}`)
+        this.$nuxt.$loading.finish()
+        this.distributorsDialog = true
+      } catch (error) {
+        console.error(error.response)
+        this.$toast.error('لا يوجد موزعين', {
+          position: 'top-center',
+          duration: 3000,
+        })
+        this.$nuxt.$loading.finish()
+      }
     },
   },
 }

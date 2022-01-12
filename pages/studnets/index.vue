@@ -347,7 +347,7 @@
         </v-toolbar>
       </template>
 
-      <template #[`item.actions`]="{ item, index }">
+      <template #[`item.actions`]="{ item }">
         <v-row justify="center" align="center">
           <v-btn color="warning" icon @click="openUpdateDialog(item)">
             <v-icon>edit</v-icon>
@@ -357,15 +357,49 @@
             <v-icon>delete</v-icon>
           </v-btn>
 
-          <v-switch
-            :key="index"
-            v-model="item.canLogin"
-            value
-            :input-value="item.canLogin"
-            :color="item.canLogin ? 'success' : 'wraning'"
-            :label="item.canLogin ? 'مفعل' : 'مغلق'"
-            @change="changeLoginStatus(item, $event)"
-          ></v-switch>
+          <v-tooltip
+            v-if="item.canLogin"
+            right
+            transition="slide-x-transition"
+            color="warning"
+          >
+            <template #activator="{ on, attrs }">
+              <v-btn
+                icon
+                color="warning"
+                small
+                v-bind="attrs"
+                depressed
+                v-on="on"
+                @click="changeLoginStatus(item, false)"
+              >
+                <v-icon>lock</v-icon>
+              </v-btn>
+            </template>
+            <span class="primary--text">الغاء التفعيل</span>
+          </v-tooltip>
+
+          <v-tooltip
+            v-else
+            right
+            transition="slide-x-transition"
+            color="success"
+          >
+            <template #activator="{ on, attrs }">
+              <v-btn
+                icon
+                color="success"
+                small
+                v-bind="attrs"
+                depressed
+                v-on="on"
+                @click="changeLoginStatus(item, true)"
+              >
+                <v-icon>check</v-icon>
+              </v-btn>
+            </template>
+            <span class="primary--text">تفعيل</span>
+          </v-tooltip>
         </v-row>
       </template>
     </v-data-table>
@@ -380,7 +414,7 @@ export default {
       {
         text: 'المعرف',
         align: 'start',
-        value: 'students.idStudent',
+        value: 'idUser',
         sortable: false,
       },
       { text: 'اسم المستخدم', value: 'userName', sortable: false },
@@ -509,15 +543,20 @@ export default {
       }
     },
 
-    async changeLoginStatus(item, event) {
-      console.log({ item, event })
+    async changeLoginStatus(item, canLogin) {
+      this.canLogin = canLogin
       const { idUser } = item
-      this.canLogin = event
-      if (confirm('هل تريد تفعيل الطالب ؟')) {
+      const message = canLogin
+        ? 'هل تريد تفعيل الطالب ؟'
+        : 'هل تريد الغاء تفعيل الطالب ؟'
+      if (confirm(`${message}`)) {
         try {
           const changeStatus = await this.$axios.put(`user/${idUser}`, {
-            canLogin: this.canLogin
+            canLogin: this.canLogin,
           })
+
+          console.log(changeStatus.data)
+          this.getStudents()
         } catch (error) {
           console.log(error)
         }
@@ -525,11 +564,15 @@ export default {
     },
 
     async deleteStudents(item) {
+      console.log(item)
       if (confirm('هل تريد حذف الطالب ؟')) {
         try {
-          const deleteStudent = await this.$axios.delete(
-            `studentInfo/${item.students.idStudent}`
-          )
+          const deleteUser = await this.$axios.delete(`user/${item.idUser}`)
+          if (item.studentInfo !== null) {
+            const deleteStudent = await this.$axios.delete(
+              `studentInfo/${item.studentInfo.idStudent}`
+            )
+          }
           this.getStudents()
         } catch (error) {
           console.log(error.response)
@@ -539,14 +582,14 @@ export default {
 
     openUpdateDialog(item) {
       this.updateStudentDialog = true
-      console.log(item);
       this.username = item.userName
       this.phone = item.phone
-      this.grade = item.studentInfo.grade
-      this.schoolName = item.studentInfo.schoolName
+      this.grade = item.studentInfo === null ? 0 : item.studentInfo.grade
+      this.schoolName =
+        item.studentInfo === null ? 'لا يوجد' : item.studentInfo.schoolName
       this.provinceId = item.provinceId
-      this.dob = item.studentInfo.dob
-      this.idClass = item.studentInfo.classId
+      this.dob = item.studentInfo === null ? 0 : item.studentInfo.dob
+      this.idClass = item.studentInfo === null ? 1 : item.studentInfo.classId
       this.idStudent = item.studentInfo.idStudent
       this.userId = item.idUser
     },
