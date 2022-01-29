@@ -126,6 +126,12 @@ export default {
       ],
     }
   },
+
+  head() {
+    return {
+      title: 'الكورسات'
+    }
+  },
 }
 </script>
 

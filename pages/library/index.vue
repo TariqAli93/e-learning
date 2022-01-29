@@ -160,6 +160,12 @@ export default {
     rules: [(v) => !!v || 'لا يمكن ترك الحقل فارغ'],
   }),
 
+  head() {
+    return {
+      title: 'المكتبة',
+    }
+  },
+
   mounted() {
     this.getFiles()
   },

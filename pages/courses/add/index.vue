@@ -205,6 +205,12 @@ export default {
     this.getTeachers()
   },
 
+  head() {
+    return {
+      title: 'اضافة كورس جديد'
+    }
+  },
+
   methods: {
     getClasses() {
       this.$axios

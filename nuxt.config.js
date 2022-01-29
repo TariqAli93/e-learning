@@ -1,7 +1,7 @@
 export default {
   head: {
-    titleTemplate: '%s - e-learning',
-    title: 'e-learning',
+    titleTemplate: '%s - منصة خطوة',
+    title: 'التعليم الالكتروني',
     htmlAttrs: {
       lang: 'ar'
     },

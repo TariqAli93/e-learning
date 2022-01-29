@@ -464,6 +464,12 @@ export default {
     canLogin: true,
   }),
 
+  head() {
+    return {
+      title: 'الطلاب',
+    }
+  },
+
   watch: {
     menu(val) {
       val && setTimeout(() => (this.activePicker = 'YEAR'))
@@ -567,11 +573,12 @@ export default {
       console.log(item)
       if (confirm('هل تريد حذف الطالب ؟')) {
         try {
-          const deleteUser = await this.$axios.delete(`user/${item.idUser}`)
           if (item.studentInfo !== null) {
             const deleteStudent = await this.$axios.delete(
               `studentInfo/${item.studentInfo.idStudent}`
             )
+
+            const deleteUser = await this.$axios.delete(`user/${item.idUser}`)
           }
           this.getStudents()
         } catch (error) {

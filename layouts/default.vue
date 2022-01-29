@@ -14,13 +14,12 @@
         <v-row>
           <v-col cols="6">
             <span
-              ><strong>&copy; {{ new Date().getFullYear() }}</strong> اسم
-              البرنامج</span
+              ><strong>&copy; {{ new Date().getFullYear() }}</strong> منصة خطوة </span
             >
           </v-col>
 
           <v-col cols="6">
-            <span class="float-left">الاصدار: 1.0.0</span>
+            <span class="float-left">الاصدار: 1.1.3</span>
           </v-col>
         </v-row>
       </v-container>

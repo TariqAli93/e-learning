@@ -172,6 +172,12 @@ export default {
     }
   },
 
+  head() {
+    return {
+      title: 'الكورسات'
+    }
+  },
+
   methods: {
     previewImage(event) {
       const output = event

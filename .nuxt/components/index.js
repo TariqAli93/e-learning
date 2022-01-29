@@ -1,9 +1,9 @@
-export { default as Breadcrumbs } from '../../components/Breadcrumbs.vue'
-export { default as HomeCards } from '../../components/HomeCards.vue'
-export { default as NavBar } from '../../components/NavBar.vue'
-export { default as NavBarList } from '../../components/NavBarList.vue'
-export { default as NavBarLogo } from '../../components/NavBarLogo.vue'
-export { default as Loading } from '../../components/loading.vue'
+export { default as Breadcrumbs } from '../..\\components\\Breadcrumbs.vue'
+export { default as HomeCards } from '../..\\components\\HomeCards.vue'
+export { default as Loading } from '../..\\components\\loading.vue'
+export { default as NavBar } from '../..\\components\\NavBar.vue'
+export { default as NavBarList } from '../..\\components\\NavBarList.vue'
+export { default as NavBarLogo } from '../..\\components\\NavBarLogo.vue'
 
 // nuxt/nuxt.js#8607
 function wrapFunctional(options) {

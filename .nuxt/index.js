@@ -5,7 +5,7 @@ import ClientOnly from 'vue-client-only'
 import NoSsr from 'vue-no-ssr'
 import { createRouter } from './router.js'
 import NuxtChild from './components/nuxt-child.js'
-import NuxtError from '../layouts/error.vue'
+import NuxtError from '..\\layouts\\error.vue'
 import Nuxt from './components/nuxt.js'
 import App from './App.js'
 import { setContext, getLocation, getRouteData, normalizeError } from './utils'
@@ -13,12 +13,12 @@ import { createStore } from './store.js'
 
 /* Plugins */
 
-import nuxt_plugin_plugin_017e8a0a from 'nuxt_plugin_plugin_017e8a0a' // Source: ./components/plugin.js (mode: 'all')
-import nuxt_plugin_plugin_d65c3a5a from 'nuxt_plugin_plugin_d65c3a5a' // Source: ./vuetify/plugin.js (mode: 'all')
-import nuxt_plugin_toast_236f9340 from 'nuxt_plugin_toast_236f9340' // Source: ./toast.js (mode: 'client')
-import nuxt_plugin_axios_573f4691 from 'nuxt_plugin_axios_573f4691' // Source: ./axios.js (mode: 'all')
-import nuxt_plugin_VueWysiwyg_d57891cc from 'nuxt_plugin_VueWysiwyg_d57891cc' // Source: ../plugins/VueWysiwyg.js (mode: 'all')
-import nuxt_plugin_auth_036e6702 from 'nuxt_plugin_auth_036e6702' // Source: ./auth.js (mode: 'all')
+import nuxt_plugin_plugin_156f4ee4 from 'nuxt_plugin_plugin_156f4ee4' // Source: .\\components\\plugin.js (mode: 'all')
+import nuxt_plugin_plugin_5deade26 from 'nuxt_plugin_plugin_5deade26' // Source: .\\vuetify\\plugin.js (mode: 'all')
+import nuxt_plugin_toast_6d75fe60 from 'nuxt_plugin_toast_6d75fe60' // Source: .\\toast.js (mode: 'client')
+import nuxt_plugin_axios_bd749c9e from 'nuxt_plugin_axios_bd749c9e' // Source: .\\axios.js (mode: 'all')
+import nuxt_plugin_VueWysiwyg_d57891cc from 'nuxt_plugin_VueWysiwyg_d57891cc' // Source: ..\\plugins\\VueWysiwyg.js (mode: 'all')
+import nuxt_plugin_auth_32387d5f from 'nuxt_plugin_auth_32387d5f' // Source: .\\auth.js (mode: 'all')
 
 // Component: <ClientOnly>
 Vue.component(ClientOnly.name, ClientOnly)
@@ -86,7 +86,7 @@ async function createApp(ssrContext, config = {}) {
   // here we inject the router and store to all child components,
   // making them available everywhere as `this.$router` and `this.$store`.
   const app = {
-    head: {"titleTemplate":"%s - e-learning","title":"e-learning","htmlAttrs":{"lang":"ar"},"meta":[{"charset":"utf-8"},{"name":"viewport","content":"width=device-width, initial-scale=1"},{"hid":"description","name":"description","content":""},{"name":"format-detection","content":"telephone=no"}],"link":[{"rel":"icon","type":"image\u002Fx-icon","href":"\u002Ffavicon.ico"},{"rel":"preconnect","href":"https:\u002F\u002Ffonts.googleapis.com"},{"rel":"stylesheet","type":"text\u002Fcss","href":"https:\u002F\u002Ffonts.googleapis.com\u002Fcss?family=Roboto:100,300,400,500,700,900&display=swap"},{"rel":"stylesheet","type":"text\u002Fcss","href":"https:\u002F\u002Fcdn.jsdelivr.net\u002Fnpm\u002F@mdi\u002Ffont@latest\u002Fcss\u002Fmaterialdesignicons.min.css"}],"style":[],"script":[]},
+    head: {"titleTemplate":"%s - منصة خطوة","title":"التعليم الالكتروني","htmlAttrs":{"lang":"ar"},"meta":[{"charset":"utf-8"},{"name":"viewport","content":"width=device-width, initial-scale=1"},{"hid":"description","name":"description","content":""},{"name":"format-detection","content":"telephone=no"}],"link":[{"rel":"icon","type":"image\u002Fx-icon","href":"\u002Ffavicon.ico"},{"rel":"preconnect","href":"https:\u002F\u002Ffonts.googleapis.com"},{"rel":"stylesheet","type":"text\u002Fcss","href":"https:\u002F\u002Ffonts.googleapis.com\u002Fcss?family=Roboto:100,300,400,500,700,900&display=swap"},{"rel":"stylesheet","type":"text\u002Fcss","href":"https:\u002F\u002Fcdn.jsdelivr.net\u002Fnpm\u002F@mdi\u002Ffont@latest\u002Fcss\u002Fmaterialdesignicons.min.css"}],"style":[],"script":[]},
 
     store,
     router,
@@ -215,28 +215,28 @@ async function createApp(ssrContext, config = {}) {
   }
   // Plugin execution
 
-  if (typeof nuxt_plugin_plugin_017e8a0a === 'function') {
-    await nuxt_plugin_plugin_017e8a0a(app.context, inject)
+  if (typeof nuxt_plugin_plugin_156f4ee4 === 'function') {
+    await nuxt_plugin_plugin_156f4ee4(app.context, inject)
   }
 
-  if (typeof nuxt_plugin_plugin_d65c3a5a === 'function') {
-    await nuxt_plugin_plugin_d65c3a5a(app.context, inject)
+  if (typeof nuxt_plugin_plugin_5deade26 === 'function') {
+    await nuxt_plugin_plugin_5deade26(app.context, inject)
   }
 
-  if (process.client && typeof nuxt_plugin_toast_236f9340 === 'function') {
-    await nuxt_plugin_toast_236f9340(app.context, inject)
+  if (process.client && typeof nuxt_plugin_toast_6d75fe60 === 'function') {
+    await nuxt_plugin_toast_6d75fe60(app.context, inject)
   }
 
-  if (typeof nuxt_plugin_axios_573f4691 === 'function') {
-    await nuxt_plugin_axios_573f4691(app.context, inject)
+  if (typeof nuxt_plugin_axios_bd749c9e === 'function') {
+    await nuxt_plugin_axios_bd749c9e(app.context, inject)
   }
 
   if (typeof nuxt_plugin_VueWysiwyg_d57891cc === 'function') {
     await nuxt_plugin_VueWysiwyg_d57891cc(app.context, inject)
   }
 
-  if (typeof nuxt_plugin_auth_036e6702 === 'function') {
-    await nuxt_plugin_auth_036e6702(app.context, inject)
+  if (typeof nuxt_plugin_auth_32387d5f === 'function') {
+    await nuxt_plugin_auth_32387d5f(app.context, inject)
   }
 
   // Lock enablePreview in context

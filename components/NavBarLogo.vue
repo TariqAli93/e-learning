@@ -1,7 +1,7 @@
 <template>
   <div class="logo">
-    <img src="../static/v.png" alt="Logo">
-    <span>اسم البرنامج</span>
+    <img src="../static/logo.png" alt="Logo">
+    <span>منصة خطوة</span>
   </div>
 </template>
 

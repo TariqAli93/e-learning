@@ -189,6 +189,12 @@ export default {
     }
   },
 
+  head() {
+    return {
+      title: 'التقارير المالية',
+    }
+  },
+
   mounted() {
     this.getDetails()
   },

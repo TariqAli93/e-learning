@@ -271,6 +271,12 @@ export default {
     ],
   }),
 
+  head() {
+    return {
+      title: 'المواد',
+    }
+  },
+
   mounted() {
     this.GetSubjects()
     this.GetClasses()

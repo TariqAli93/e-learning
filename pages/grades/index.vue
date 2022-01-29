@@ -242,6 +242,12 @@ export default {
     ],
   }),
 
+  head() {
+    return {
+      title: 'المراحل',
+    }
+  },
+
   mounted() {
     this.GetClasses()
   },

@@ -60,6 +60,7 @@
                 label="الاستاذ"
                 color="text"
                 :rules="rules"
+                @change="getTeachersCourses"
               ></v-select>
             </v-col>
 
@@ -74,6 +75,7 @@
                 label="الكورس"
                 color="text"
                 :rules="rules"
+                :disabled="disabled"
               ></v-select>
             </v-col>
           </v-row>
@@ -144,7 +146,15 @@
           </div>
         </v-toolbar>
         <v-list nav dense color="transparent">
-          <v-list-item v-for="codes in newCodes" :key="codes" color="transparent" style="border-bottom: 1px solid rgba(0, 0, 0, 0.20); border-radius: 0 !important">
+          <v-list-item
+            v-for="codes in newCodes"
+            :key="codes"
+            color="transparent"
+            style="
+              border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+              border-radius: 0 !important;
+            "
+          >
             <v-list-item-title>{{ codes.code }}</v-list-item-title>
           </v-list-item>
         </v-list>
@@ -301,6 +311,13 @@ export default {
       courseId: '',
       rules: [(v) => !!v || 'لا يمكن ترك الحقل فارغ'],
       newCodes: [],
+      disabled: true,
+    }
+  },
+
+  head() {
+    return {
+      title: 'الخصومات',
     }
   },
 
@@ -413,6 +430,19 @@ export default {
         } catch (error) {
           console.log(error.response)
         }
+      }
+    },
+
+    async getTeachersCourses(id) {
+      try {
+        const courses = await this.$axios.get(`courses`)
+        this.courses = courses.data.filter(c => {
+          return c.createdBy === id
+        })
+        this.disabled = false
+      } catch (error) {
+        console.log(error.response)
+        this.disabled = true
       }
     },
   },

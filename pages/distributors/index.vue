@@ -379,6 +379,12 @@ export default {
     rules: [(v) => !!v || 'لا يمكن ترك الحقل فارغ'],
   }),
 
+  head() {
+    return {
+      title: 'الموزعين',
+    }
+  },
+
   mounted() {
     this.getDistributors()
     this.$axios.get('provinces').then((result) => {
@@ -456,6 +462,8 @@ export default {
           const deleteDist = await this.$axios.delete(
             `distributorInfo/${item.idDistributor}`
           )
+
+          const deleteUser = await this.$axios.delete(`user/${item.userId}`)
           this.getDistributors()
         } catch (error) {
           console.log(error.response)

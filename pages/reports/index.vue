@@ -249,6 +249,12 @@ export default {
     }
   },
 
+  head() {
+    return {
+      title: 'التقارير المالية',
+    }
+  },
+
   computed: {
     dateRangeText: {
       get() {

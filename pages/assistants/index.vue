@@ -153,6 +153,12 @@ export default {
     this.GetTeachers()
   },
 
+  head() {
+    return {
+      title: 'المساعدين',
+    }
+  },
+
   methods: {
     async GetAssistants() {
       try {

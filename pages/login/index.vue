@@ -66,10 +66,16 @@ export default {
   data() {
     return {
       loginForm: false,
-      username: '784356',
-      password: '123',
+      username: '',//784356
+      password: '',//123
       showPassword: false,
       rules: [(v) => !!v || 'لا يمكن ترك الحقل فارغ'],
+    }
+  },
+
+  head() {
+    return {
+      title: 'تسجيل الدخول',
     }
   },
 
@@ -111,11 +117,11 @@ export default {
             this.$auth.setUser(this.parseToken(user.data.token))
             this.$auth.strategy.token.set(user.data.token)
             this.$auth.$storage.setUniversal('user',this.parseToken(user.data.token))
-  
+
             showMessage.goAway()
-  
+
             this.$nuxt.$loading.finish()
-  
+
             this.$toast.success('تم تسجيل الدخول', {
               duration: 3000,
               position: 'top-center',

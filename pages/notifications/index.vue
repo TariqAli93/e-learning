@@ -51,6 +51,12 @@ export default {
     }
   },
 
+  head() {
+    return {
+      title: 'الاشعارات',
+    }
+  },
+
   methods: {
     async sendNotification() {
       if (this.$refs.notificationsRef.validate()) {

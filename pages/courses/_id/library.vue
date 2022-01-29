@@ -212,6 +212,12 @@ export default {
     }
   },
 
+  head() {
+    return {
+      title: 'الكورسات'
+    }
+  },
+
   created() {
     this.courseId = this.$route.params.id
     this.courseDetails()

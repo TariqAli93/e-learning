@@ -285,6 +285,13 @@ export default {
     idUser: null,
   }),
 
+  head() {
+    return {
+      title: 'المستخدمين',
+    }
+  },
+
+
   mounted() {
     this.getUsers()
     this.getProvinces()

@@ -479,6 +479,12 @@ export default {
     this.getVideos()
   },
 
+  head() {
+    return {
+      title: 'الكورسات'
+    }
+  },
+
   methods: {
     async getVideos() {
       try {

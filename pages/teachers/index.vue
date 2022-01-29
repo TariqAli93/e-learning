@@ -315,11 +315,11 @@
           :items-per-page="15"
           class="pa-5 secondary"
         >
-        <template #[`item.actions`]="{ item }">
-          <v-btn color="error" icon @click="deleteAssistanceTeacher(item)">
-            <v-icon>delete</v-icon>
-          </v-btn>
-        </template>
+          <template #[`item.actions`]="{ item }">
+            <v-btn color="error" icon @click="deleteAssistanceTeacher(item)">
+              <v-icon>delete</v-icon>
+            </v-btn>
+          </template>
         </v-data-table>
       </v-card>
     </v-dialog>
@@ -414,13 +414,18 @@ export default {
         value: 'userId',
         sortable: false,
       },
-      { text: 'الصورة', value: 'photoPath', sortable: false, width: 350},
-      { text: 'اسم المستخدم', value: 'userName', sortable: false, width: 350},
-      { text: 'عن الاستاذ', value: 'bio', sortable: false, width: 350},
-      { text: 'اسم المدرسة', value: 'schoolName', sortable: false, width: 350},
-      { text: 'الهاتف', value: 'phone', sortable: false, width: 350},
-      { text: 'المحافظة', value: 'province.provinceName', sortable: false, width: 350},
-      { text: 'الاجرائات', value: 'actions', sortable: false, width: 350},
+      { text: 'الصورة', value: 'photoPath', sortable: false, width: 350 },
+      { text: 'اسم المستخدم', value: 'userName', sortable: false, width: 350 },
+      { text: 'عن الاستاذ', value: 'bio', sortable: false, width: 350 },
+      { text: 'اسم المدرسة', value: 'schoolName', sortable: false, width: 350 },
+      { text: 'الهاتف', value: 'phone', sortable: false, width: 350 },
+      {
+        text: 'المحافظة',
+        value: 'province.provinceName',
+        sortable: false,
+        width: 350,
+      },
+      { text: 'الاجرائات', value: 'actions', sortable: false, width: 350 },
     ],
 
     teachers: [],
@@ -462,6 +467,12 @@ export default {
       { text: 'الاجرائات', value: 'actions', sortable: false },
     ],
   }),
+
+  head() {
+    return {
+      title: 'الاساتذة',
+    }
+  },
 
   mounted() {
     this.getProvinces()
@@ -550,11 +561,13 @@ export default {
     },
 
     async deleteTeachers(item) {
+      console.log(item)
       if (confirm('هل تريد حذف الاستاذ ؟')) {
         try {
           const deleteTeacher = await this.$axios.delete(
             `teacherInfo/${item.idTeacher}`
           )
+          const deleteUser = await this.$axios.delete(`user/${item.userId}`)
           this.getTeachers()
         } catch (error) {
           console.log(error.response)
@@ -635,9 +648,11 @@ export default {
 
     async deleteAssistanceTeacher(item) {
       const { idAssistanceTeacher } = item
-      if(confirm('هل تريد ازالة المساعد من الاستاذ ؟')) {
+      if (confirm('هل تريد ازالة المساعد من الاستاذ ؟')) {
         try {
-          const remove = await this.$axios.delete(`assistanceTeacher/${idAssistanceTeacher}`)
+          const remove = await this.$axios.delete(
+            `assistanceTeacher/${idAssistanceTeacher}`
+          )
           this.AssistanceTeacherDialog = false
           this.AssistanceTeacher = []
           this.getTeachers()
@@ -645,7 +660,7 @@ export default {
           console.log(error)
         }
       }
-    }
+    },
   },
 }
 </script>

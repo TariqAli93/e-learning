@@ -1,6 +1,10 @@
 <template>
   <div id="CoursesPage">
-    <v-dialog v-model="distributorsDialog" transition="slide-y-transition" max-width="750px">
+    <v-dialog
+      v-model="distributorsDialog"
+      transition="slide-y-transition"
+      max-width="750px"
+    >
       <v-card color="secondary" class="shadow-1 radius-1 pa-10">
         <v-toolbar color="primary" class="shadow-1 radius-1 mb-10">
           <h4>الموزعين</h4>
@@ -9,6 +13,49 @@
             <v-icon>close</v-icon>
           </v-btn>
         </v-toolbar>
+
+        <v-data-table
+          :headers="distributorsHeaders"
+          :items.sync="distributors"
+          :items-per-page="15"
+          class="pa-5 secondary courses__table"
+        >
+          <template #[`item.distributorStatus`]="{ item }">
+            <v-chip :color="item.distributorStatus | theStatus">{{
+              item.distributorStatus
+            }}</v-chip>
+          </template>
+
+          <template #[`item.actions`]="{ item }">
+            <v-menu transition="slide-y-transition">
+              <template #activator="{ on, attrs }">
+                <v-btn color="warning" icon small v-bind="attrs" v-on="on">
+                  <v-icon>published_with_changes</v-icon>
+                </v-btn>
+              </template>
+
+              <v-list nav dense color="primary">
+                <v-list-item
+                  class="text--text"
+                  @click="changeStatus(item, 'ACCEPTED')"
+                  >ACCEPTED</v-list-item
+                >
+                <v-divider class="secondary mb-2 mt-2" />
+                <v-list-item
+                  class="text--text"
+                  @click="changeStatus(item, 'PENDING')"
+                  >PENDING</v-list-item
+                >
+                <v-divider class="secondary mb-2 mt-2" />
+                <v-list-item
+                  class="text--text"
+                  @click="changeStatus(item, 'CANCELLED')"
+                  >CANCELLED</v-list-item
+                >
+              </v-list>
+            </v-menu>
+          </template>
+        </v-data-table>
       </v-card>
     </v-dialog>
     <!-- course table -->
@@ -88,7 +135,11 @@
           <v-icon>delete</v-icon>
         </v-btn>
 
-        <v-btn icon color="info" @click.prevent="getDistributors(item)">
+        <v-btn
+          icon
+          color="info"
+          @click.prevent="getDistributors(item.idCourse)"
+        >
           <v-icon>people</v-icon>
         </v-btn>
       </template>
@@ -106,6 +157,46 @@ export default {
       dates: [],
       datesMenu: false,
       distributorsDialog: false,
+      distributors: [],
+      distributorsHeaders: [
+        {
+          text: 'المعرف',
+          align: 'start',
+          value: 'user.idUser',
+          sortable: false,
+        },
+        {
+          text: 'اسم الموزع',
+          align: 'start',
+          value: 'user.userName',
+          sortable: false,
+        },
+        {
+          text: 'رقم الهاتف',
+          align: 'start',
+          value: 'user.phone',
+          sortable: false,
+        },
+        {
+          text: 'المحافطة',
+          align: 'start',
+          value: 'user.province.provinceName',
+          sortable: false,
+        },
+        {
+          text: 'الحالة',
+          align: 'start',
+          value: 'distributorStatus',
+          sortable: false,
+        },
+        {
+          text: 'الاجرائات',
+          align: 'start',
+          value: 'actions',
+          sortable: false,
+        },
+      ],
+
       headers: [
         {
           text: 'الصورة',
@@ -134,8 +225,26 @@ export default {
     },
   },
 
+  filters: {
+    theStatus(status) {
+      if (status === 'ACCEPTED') {
+        return 'success'
+      } else if (status === 'PENDING') {
+        return 'warning'
+      } else {
+        return 'error'
+      }
+    },
+  },
+
   mounted() {
     this.GetCourses()
+  },
+
+  head() {
+    return {
+      title: 'الكورسات'
+    }
   },
 
   methods: {
@@ -171,13 +280,15 @@ export default {
       this.$refs.datesMenuRef.save(date)
     },
 
-    async getDistributors(item) {
-      const { idCourse } = item
+    async getDistributors(id) {
+      const idCourse = id
       this.$nuxt.$loading.start()
       try {
         const dist = await this.$axios.get(`courseDistributors/${idCourse}`)
         this.$nuxt.$loading.finish()
         this.distributorsDialog = true
+        this.distributors = dist.data
+        console.log(dist.data)
       } catch (error) {
         console.error(error.response)
         this.$toast.error('لا يوجد موزعين', {
@@ -185,6 +296,26 @@ export default {
           duration: 3000,
         })
         this.$nuxt.$loading.finish()
+      }
+    },
+
+    async changeStatus(item, status) {
+      try {
+        const update = await this.$axios.put(
+          `courseDistributor/${item.idCourseDistributor}`,
+          {
+            courseId: item.courseId,
+            distributorId: item.distributorId,
+            distributorStatus: status,
+          }
+        )
+
+        console.log(update.data)
+        this.getDistributors(item.courseId)
+        this.distributorsDialog = false
+        this.distributorsDialog = true
+      } catch (error) {
+        console.error(error.response)
       }
     },
   },

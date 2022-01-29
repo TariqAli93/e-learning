@@ -184,6 +184,12 @@ export default {
     }
   },
 
+  head() {
+    return {
+      title: 'الكورسات'
+    }
+  },
+
   mounted() {
     this.getClasses()
     this.getTeachers()

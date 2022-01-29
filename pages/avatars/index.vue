@@ -67,6 +67,12 @@ export default {
     this.getAvaatars()
   },
 
+  head() {
+    return {
+      title: 'الافتارات',
+    }
+  },
+
   methods: {
     async saveImage(event) {
       this.tempFile = event
