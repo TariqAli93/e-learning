@@ -13,7 +13,7 @@
         class="rounded-1 shadow-1 mt-10 pa-5"
         width="500px"
       >
-        <img src="~/static/vuetify-logo.svg" />
+        <img src="~/static/logo.png" />
         <v-form
           ref="LoginForm"
           v-model="loginForm"
@@ -66,8 +66,8 @@ export default {
   data() {
     return {
       loginForm: false,
-      username: '',//784356
-      password: '',//123
+      username: '',// 784356
+      password: '',// 123
       showPassword: false,
       rules: [(v) => !!v || 'لا يمكن ترك الحقل فارغ'],
     }

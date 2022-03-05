@@ -203,6 +203,12 @@ export default {
           to: '/users',
           show: true,
         },
+        {
+          title: 'المجموعات',
+          icon: 'people',
+          to: '/groups',
+          show: true,
+        },
       ],
     }
   },

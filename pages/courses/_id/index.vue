@@ -75,6 +75,53 @@
     </v-dialog>
 
     <v-dialog
+      v-model="uploadDialog"
+      max-width="750px"
+      transition="slide-y-transition"
+    >
+      <v-card color="secondary" class="shadow-1 radius-1 pa-10">
+        <v-toolbar color="primary" class="shadow-1 radius-1 mb-10">
+          <h4>اضافة فيديو جديد</h4>
+          <v-spacer />
+          <v-btn icon color="accent" @click="uploadDialog = false">
+            <v-icon>close</v-icon>
+          </v-btn>
+        </v-toolbar>
+
+        <v-form
+          ref="uploadVideoRef"
+          v-model="uploadForm"
+          lazy-validation
+          @submit.prevent="uploadVideo"
+        >
+          <v-row>
+            <v-col cols="12">
+              <v-text-field
+                v-model="uploadVideoLink"
+                :rules="rules"
+                label="رابط الفيديو"
+                outlined
+                color="text"
+                clearable
+                prepend-inner-icon="mdi-youtube"
+              ></v-text-field>
+            </v-col>
+          </v-row>
+
+          <v-btn
+            block
+            large
+            color="success"
+            depressed
+            type="submit"
+            :disabled="!uploadForm"
+            >حفظ الفيديو</v-btn
+          >
+        </v-form>
+      </v-card>
+    </v-dialog>
+
+    <v-dialog
       v-model="createVideoDialog"
       max-width="750px"
       transition="slide-y-transition"
@@ -384,6 +431,10 @@
           <v-btn icon color="success" @click="initVideoComments(item)">
             <v-icon>feedback</v-icon>
           </v-btn>
+
+          <v-btn icon color="success" @click="openUploadDialog(item)">
+            <v-icon>mdi-youtube</v-icon>
+          </v-btn>
         </template>
       </v-data-table>
     </v-card>
@@ -395,6 +446,10 @@ export default {
   data() {
     return {
       search: '',
+      uploadDialog: false,
+      uploadForm: false,
+      uploadVideoLink: '',
+      courseVideoId: '',
       updateVideoDialog: false,
       createVideoDialog: false,
       updateForm: false,
@@ -475,14 +530,14 @@ export default {
     }
   },
 
-  mounted() {
-    this.getVideos()
-  },
-
   head() {
     return {
-      title: 'الكورسات'
+      title: 'الكورسات',
     }
+  },
+
+  mounted() {
+    this.getVideos()
   },
 
   methods: {
@@ -570,6 +625,7 @@ export default {
           courseId: this.$route.params.id * 1,
           createdBy: this.$auth.user.idUser * 1,
           unlockAt: new Date(data.unlockAt),
+          secondVideoLink: 'link'
         }
 
         if (this.$refs.createVideoRef.validate()) {
@@ -707,6 +763,30 @@ export default {
         }
       } catch (error) {
         console.log(error.response)
+      }
+    },
+    openUploadDialog(item) {
+      this.courseVideoId = item.idCourseVideo
+      this.uploadDialog = true
+    },
+    async uploadVideo() {
+      this.$nuxt.$loading.start()
+      try {
+        if (this.$refs.uploadVideoRef.validate()) {
+          const upload = await this.$axios.post('uploadFromUrl', {
+            videoUrl: this.uploadVideoLink,
+            courseVideoId: this.courseVideoId,
+          })
+
+          console.log(upload.data)
+          this.uploadDialog = false
+          this.getVideos()
+
+          this.$nuxt.$loading.finish()
+        }
+      } catch (error) {
+        console.log(error.response)
+        this.$nuxt.$loading.finish()
       }
     },
   },
