@@ -1,42 +1,64 @@
 <template>
   <div class="notifications-page">
     <v-card color="secondary" class="shadow-1 radius-1 pa-10">
-      <v-toolbar flat color="primary" class="shadow-1 radius-1 mb-10">
-        <h4>اضافة اشعار جديد</h4>
-      </v-toolbar>
-
-      <v-form
-        ref="notificationsRef"
-        v-model="notificationsForm"
-        lazy-validation
-        @submit.prevent="sendNotification"
+      <v-tabs
+        color="transparent"
+        background-color="secondary"
+        grow
+        centered
+        center-active
       >
-        <v-row>
-          <v-col cols="12">
-            <v-text-field
-              v-model="notificationsTitle"
-              label="العنوان"
-              color="text"
-              outlined
-              :rules="[(v) => !!v || 'لا يمكن ترك الحقل فارغ']"
-            ></v-text-field>
-          </v-col>
+        <v-tab> اشعارات عامة </v-tab>
 
-          <v-col cols="12">
-            <v-textarea
-              v-model="notificationsText"
-              label="نص الاشعار"
-              color="text"
-              outlined
-              :rules="[(v) => !!v || 'لا يمكن ترك الحقل فارغ']"
-            ></v-textarea>
-          </v-col>
-        </v-row>
+        <v-tab> اشعارات الكورسات </v-tab>
 
-        <v-btn color="success" large block depressed type="submit"
-          >ارسال الاشعار</v-btn
-        >
-      </v-form>
+        <v-tab> اشعارات المجموعات </v-tab>
+
+        <v-tab-item>
+          <v-card color="secondary" class="pa-10" elevation="0">
+            <v-form
+              ref="notificationsRef"
+              v-model="notificationsForm"
+              lazy-validation
+              @submit.prevent="sendNotification"
+            >
+              <v-row>
+                <v-col cols="12">
+                  <v-text-field
+                    v-model="notificationsTitle"
+                    label="العنوان"
+                    color="text"
+                    outlined
+                    :rules="[(v) => !!v || 'لا يمكن ترك الحقل فارغ']"
+                  ></v-text-field>
+                </v-col>
+
+                <v-col cols="12">
+                  <v-textarea
+                    v-model="notificationsText"
+                    label="نص الاشعار"
+                    color="text"
+                    outlined
+                    :rules="[(v) => !!v || 'لا يمكن ترك الحقل فارغ']"
+                  ></v-textarea>
+                </v-col>
+              </v-row>
+
+              <v-btn color="success" large block depressed type="submit"
+                >ارسال الاشعار</v-btn
+              >
+            </v-form>
+          </v-card>
+        </v-tab-item>
+
+        <v-tab-item>
+          <NotificationsCourses></NotificationsCourses>
+        </v-tab-item>
+
+        <v-tab-item>
+          <NotificationsGroups></NotificationsGroups>
+        </v-tab-item>
+      </v-tabs>
     </v-card>
   </div>
 </template>

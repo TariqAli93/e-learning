@@ -1,7 +1,11 @@
 <template>
   <div class="logo">
-    <img src="../static/logo.png" alt="Logo">
-    <span>منصة خطوة</span>
+    <v-list dense nav flat elevation="0" color="transparent">
+      <v-list-item to="/">
+        <img src="../static/logo.png" alt="Logo" />
+        <span>منصة خطوة</span>
+      </v-list-item>
+    </v-list>
   </div>
 </template>
 
@@ -16,8 +20,9 @@
 
   img {
     display: block;
-    width: 65px;
-    height: 100%;
+    width: 40px;
+    height: 56px;
+    margin-left: 0.5em;
   }
 }
 </style>

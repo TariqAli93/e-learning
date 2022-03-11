@@ -2,169 +2,176 @@
   {
     "name": "assistants",
     "path": "/assistants",
-    "component": "/Users/tariqali/projects/e-learning/pages/assistants/index.vue",
+    "component": "E:\\\\projects\\\\e-learning\\\\pages\\\\assistants\\\\index.vue",
     "chunkName": "pages/assistants/index",
-    "_name": "_1692414d"
+    "_name": "_393a39bc"
   },
   {
     "name": "avatars",
     "path": "/avatars",
-    "component": "/Users/tariqali/projects/e-learning/pages/avatars/index.vue",
+    "component": "E:\\\\projects\\\\e-learning\\\\pages\\\\avatars\\\\index.vue",
     "chunkName": "pages/avatars/index",
-    "_name": "_967cd250"
+    "_name": "_4a781e89"
   },
   {
     "name": "courses",
     "path": "/courses",
-    "component": "/Users/tariqali/projects/e-learning/pages/courses/index.vue",
+    "component": "E:\\\\projects\\\\e-learning\\\\pages\\\\courses\\\\index.vue",
     "chunkName": "pages/courses/index",
-    "_name": "_649bea54"
+    "_name": "_4f962a4b"
   },
   {
     "name": "distributors",
     "path": "/distributors",
-    "component": "/Users/tariqali/projects/e-learning/pages/distributors/index.vue",
+    "component": "E:\\\\projects\\\\e-learning\\\\pages\\\\distributors\\\\index.vue",
     "chunkName": "pages/distributors/index",
-    "_name": "_f3e50d38"
+    "_name": "_54af6385"
   },
   {
     "name": "grades",
     "path": "/grades",
-    "component": "/Users/tariqali/projects/e-learning/pages/grades/index.vue",
+    "component": "E:\\\\projects\\\\e-learning\\\\pages\\\\grades\\\\index.vue",
     "chunkName": "pages/grades/index",
-    "_name": "_2ec76534"
+    "_name": "_6e4394b5"
   },
   {
     "name": "groups",
     "path": "/groups",
-    "component": "/Users/tariqali/projects/e-learning/pages/groups/index.vue",
+    "component": "E:\\\\projects\\\\e-learning\\\\pages\\\\groups\\\\index.vue",
     "chunkName": "pages/groups/index",
-    "_name": "_978414e8"
+    "_name": "_d0c1e146"
   },
   {
     "name": "library",
     "path": "/library",
-    "component": "/Users/tariqali/projects/e-learning/pages/library/index.vue",
+    "component": "E:\\\\projects\\\\e-learning\\\\pages\\\\library\\\\index.vue",
     "chunkName": "pages/library/index",
-    "_name": "_69bc37ce"
+    "_name": "_00217968"
   },
   {
     "name": "login",
     "path": "/login",
-    "component": "/Users/tariqali/projects/e-learning/pages/login/index.vue",
+    "component": "E:\\\\projects\\\\e-learning\\\\pages\\\\login\\\\index.vue",
     "chunkName": "pages/login/index",
-    "_name": "_3fac5207"
+    "_name": "_81e4ef8c"
   },
   {
     "name": "notifications",
     "path": "/notifications",
-    "component": "/Users/tariqali/projects/e-learning/pages/notifications/index.vue",
+    "component": "E:\\\\projects\\\\e-learning\\\\pages\\\\notifications\\\\index.vue",
     "chunkName": "pages/notifications/index",
-    "_name": "_3d9df1c6"
+    "_name": "_2623645b"
   },
   {
     "name": "promo",
     "path": "/promo",
-    "component": "/Users/tariqali/projects/e-learning/pages/promo/index.vue",
+    "component": "E:\\\\projects\\\\e-learning\\\\pages\\\\promo\\\\index.vue",
     "chunkName": "pages/promo/index",
-    "_name": "_7476d42d"
+    "_name": "_23934ad4"
   },
   {
     "name": "reports",
     "path": "/reports",
-    "component": "/Users/tariqali/projects/e-learning/pages/reports/index.vue",
+    "component": "E:\\\\projects\\\\e-learning\\\\pages\\\\reports\\\\index.vue",
     "chunkName": "pages/reports/index",
-    "_name": "_5412c7c6"
+    "_name": "_4fe3c1e4"
+  },
+  {
+    "name": "settings",
+    "path": "/settings",
+    "component": "E:\\\\projects\\\\e-learning\\\\pages\\\\settings\\\\index.vue",
+    "chunkName": "pages/settings/index",
+    "_name": "_b7fb4024"
   },
   {
     "name": "studnets",
     "path": "/studnets",
-    "component": "/Users/tariqali/projects/e-learning/pages/studnets/index.vue",
+    "component": "E:\\\\projects\\\\e-learning\\\\pages\\\\studnets\\\\index.vue",
     "chunkName": "pages/studnets/index",
-    "_name": "_f4e635c4"
+    "_name": "_4d3ef10b"
   },
   {
     "name": "subjects",
     "path": "/subjects",
-    "component": "/Users/tariqali/projects/e-learning/pages/subjects/index.vue",
+    "component": "E:\\\\projects\\\\e-learning\\\\pages\\\\subjects\\\\index.vue",
     "chunkName": "pages/subjects/index",
-    "_name": "_65b5a57f"
+    "_name": "_722e3cca"
   },
   {
     "name": "teachers",
     "path": "/teachers",
-    "component": "/Users/tariqali/projects/e-learning/pages/teachers/index.vue",
+    "component": "E:\\\\projects\\\\e-learning\\\\pages\\\\teachers\\\\index.vue",
     "chunkName": "pages/teachers/index",
-    "_name": "_3c540109"
+    "_name": "_6f5b5280"
   },
   {
     "name": "users",
     "path": "/users",
-    "component": "/Users/tariqali/projects/e-learning/pages/users/index.vue",
+    "component": "E:\\\\projects\\\\e-learning\\\\pages\\\\users\\\\index.vue",
     "chunkName": "pages/users/index",
-    "_name": "_408a75e6"
+    "_name": "_4c183f8a"
   },
   {
     "name": "courses-add",
     "path": "/courses/add",
-    "component": "/Users/tariqali/projects/e-learning/pages/courses/add/index.vue",
+    "component": "E:\\\\projects\\\\e-learning\\\\pages\\\\courses\\\\add\\\\index.vue",
     "chunkName": "pages/courses/add/index",
-    "_name": "_6acb9ce8"
+    "_name": "_45b44c68"
   },
   {
     "name": "courses-id",
     "path": "/courses/:id",
-    "component": "/Users/tariqali/projects/e-learning/pages/courses/_id/index.vue",
+    "component": "E:\\\\projects\\\\e-learning\\\\pages\\\\courses\\\\_id\\\\index.vue",
     "chunkName": "pages/courses/_id/index",
-    "_name": "_97846a7e"
+    "_name": "_2a87d9af"
   },
   {
     "name": "reports-id",
     "path": "/reports/:id",
-    "component": "/Users/tariqali/projects/e-learning/pages/reports/_id.vue",
+    "component": "E:\\\\projects\\\\e-learning\\\\pages\\\\reports\\\\_id.vue",
     "chunkName": "pages/reports/_id",
-    "_name": "_7bc701c5"
+    "_name": "_3c80ed4c"
   },
   {
     "name": "courses-id-add",
     "path": "/courses/:id/add",
-    "component": "/Users/tariqali/projects/e-learning/pages/courses/_id/add.vue",
+    "component": "E:\\\\projects\\\\e-learning\\\\pages\\\\courses\\\\_id\\\\add.vue",
     "chunkName": "pages/courses/_id/add",
-    "_name": "_43d5c4d0"
+    "_name": "_3592b73e"
   },
   {
     "name": "courses-id-homework",
     "path": "/courses/:id/homework",
-    "component": "/Users/tariqali/projects/e-learning/pages/courses/_id/homework.vue",
+    "component": "E:\\\\projects\\\\e-learning\\\\pages\\\\courses\\\\_id\\\\homework.vue",
     "chunkName": "pages/courses/_id/homework",
-    "_name": "_05b21351"
+    "_name": "_79f175a3"
   },
   {
     "name": "courses-id-library",
     "path": "/courses/:id/library",
-    "component": "/Users/tariqali/projects/e-learning/pages/courses/_id/library.vue",
+    "component": "E:\\\\projects\\\\e-learning\\\\pages\\\\courses\\\\_id\\\\library.vue",
     "chunkName": "pages/courses/_id/library",
-    "_name": "_667ff06a"
+    "_name": "_7281fbd8"
   },
   {
     "name": "courses-id-settings",
     "path": "/courses/:id/settings",
-    "component": "/Users/tariqali/projects/e-learning/pages/courses/_id/settings.vue",
+    "component": "E:\\\\projects\\\\e-learning\\\\pages\\\\courses\\\\_id\\\\settings.vue",
     "chunkName": "pages/courses/_id/settings",
-    "_name": "_1c42ecf8"
+    "_name": "_661debd6"
   },
   {
     "name": "courses-id-update",
     "path": "/courses/:id/update",
-    "component": "/Users/tariqali/projects/e-learning/pages/courses/_id/update.vue",
+    "component": "E:\\\\projects\\\\e-learning\\\\pages\\\\courses\\\\_id\\\\update.vue",
     "chunkName": "pages/courses/_id/update",
-    "_name": "_d0207d2c"
+    "_name": "_2a30df88"
   },
   {
     "name": "index",
     "path": "/",
-    "component": "/Users/tariqali/projects/e-learning/pages/index.vue",
+    "component": "E:\\\\projects\\\\e-learning\\\\pages\\\\index.vue",
     "chunkName": "pages/index",
-    "_name": "_ea6fc926"
+    "_name": "_03ff6831"
   }
 ]

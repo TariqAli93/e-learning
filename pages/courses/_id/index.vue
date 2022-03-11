@@ -164,7 +164,7 @@
               ></v-text-field>
             </v-col>
 
-            <v-col cols="12">
+            <v-col cols="12" sm="12" md="6" lg="6" xl="6">
               <v-text-field
                 name="unlockAt"
                 label="تاريخ الفتح"
@@ -174,6 +174,17 @@
                 type="datetime-local"
                 prepend-inner-icon="mdi-youtube"
               ></v-text-field>
+            </v-col>
+
+            <v-col cols="12" sm="12" md="6" lg="6" xl="6">
+              <v-file-input
+                v-model="videoPhotoTmp"
+                label="صورة الفيديو"
+                :rules="rules"
+                outlined
+                color="text"
+                prepend-inner-icon="mdi-image"
+              ></v-file-input>
             </v-col>
 
             <v-col cols="12" sm="12" md="12" lg="12" xl="12">
@@ -460,6 +471,7 @@ export default {
       quizAnswerCurrect: null,
       quizAnswerWrong: null,
       quizAnswerWrong2: null,
+      videoPhotoTmp: null,
       rules: [(v) => !!v || 'لا يمكن ترك الحقل فارغ'],
       headers: [
         {
@@ -479,6 +491,12 @@ export default {
           sortable: false,
           align: 'start',
           value: 'videoLink',
+        },
+        {
+          text: 'رابط الفيديو الثاني',
+          sortable: false,
+          align: 'start',
+          value: 'secondVideoLink',
         },
         {
           text: 'الوصف',
@@ -547,6 +565,7 @@ export default {
         const course = await this.$axios.get(`course/${courseId}`)
         this.videos = course.data.CourseVideo
         this.courseName = course.data.courseTitle
+        console.log(course.data)
       } catch (error) {
         console.error(error.response)
       }
@@ -618,14 +637,20 @@ export default {
     },
 
     async createVideo(event) {
+      this.$nuxt.$loading.start()
       try {
         const data = Object.fromEntries(new FormData(event.target))
+        const form = new FormData()
+        form.append('attachment', this.videoPhotoTmp)
+        const upload = await this.$axios.post('upload', form)
+
         const myObj = {
           ...data,
           courseId: this.$route.params.id * 1,
           createdBy: this.$auth.user.idUser * 1,
           unlockAt: new Date(data.unlockAt),
-          secondVideoLink: 'link'
+          secondVideoLink: 'link',
+          videoPhoto: upload.data.imagePath,
         }
 
         if (this.$refs.createVideoRef.validate()) {
@@ -633,8 +658,12 @@ export default {
           const create = await this.$axios.post(`addCourseVideo`, myObj)
           this.getVideos()
           this.createVideoDialog = false
+
+          this.$nuxt.$loading.finish()
         }
       } catch (error) {
+        this.$nuxt.$loading.finish()
+
         console.log(error.response)
       }
     },

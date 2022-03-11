@@ -8,7 +8,9 @@ You can directly use them in pages and other components without the need to impo
 
 - `<Breadcrumbs>` | `<breadcrumbs>` (components/Breadcrumbs.vue)
 - `<HomeCards>` | `<home-cards>` (components/HomeCards.vue)
+- `<Loading>` | `<loading>` (components/loading.vue)
 - `<NavBar>` | `<nav-bar>` (components/NavBar.vue)
 - `<NavBarList>` | `<nav-bar-list>` (components/NavBarList.vue)
 - `<NavBarLogo>` | `<nav-bar-logo>` (components/NavBarLogo.vue)
-- `<Loading>` | `<loading>` (components/loading.vue)
+- `<NotificationsCourses>` | `<notifications-courses>` (components/Notifications/Courses.vue)
+- `<NotificationsGroups>` | `<notifications-groups>` (components/Notifications/Groups.vue)

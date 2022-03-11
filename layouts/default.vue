@@ -14,12 +14,12 @@
         <v-row>
           <v-col cols="6">
             <span
-              ><strong>&copy; {{ new Date().getFullYear() }}</strong> منصة خطوة </span
-            >
+              ><strong>&copy; {{ new Date().getFullYear() }}</strong> منصة خطوة
+            </span>
           </v-col>
 
           <v-col cols="6">
-            <span class="float-left">الاصدار: 1.1.3</span>
+            <span class="float-left">الاصدار : {{version}}</span>
           </v-col>
         </v-row>
       </v-container>
@@ -30,6 +30,11 @@
 <script>
 import 'material-design-icons-iconfont/dist/material-design-icons.css'
 export default {
+  data() {
+    return {
+      version: '1.0.0',
+    }
+  },
   computed: {
     role() {
       return this.$auth.user.roleId ?? 1
@@ -40,6 +45,10 @@ export default {
       'user',
       this.$auth.$storage.getUniversal('user')
     )
+
+    this.$axios.get('settings').then((res) => {
+      this.version = res.data[0].version
+    })
   },
 }
 </script>

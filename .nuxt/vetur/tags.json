@@ -5,6 +5,9 @@
   "HomeCards": {
     "description": "Auto imported from components/HomeCards.vue"
   },
+  "Loading": {
+    "description": "Auto imported from components/loading.vue"
+  },
   "NavBar": {
     "description": "Auto imported from components/NavBar.vue"
   },
@@ -14,7 +17,10 @@
   "NavBarLogo": {
     "description": "Auto imported from components/NavBarLogo.vue"
   },
-  "Loading": {
-    "description": "Auto imported from components/loading.vue"
+  "NotificationsCourses": {
+    "description": "Auto imported from components/Notifications/Courses.vue"
+  },
+  "NotificationsGroups": {
+    "description": "Auto imported from components/Notifications/Groups.vue"
   }
 }

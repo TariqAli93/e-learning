@@ -12,28 +12,22 @@ export default {
       { name: 'format-detection', content: 'telephone=no' }
     ],
     link: [
-      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+      { rel: 'icon', type: 'image/x-icon', href: '/logo.png' },
       { rel: 'preconnect', href: 'https://fonts.googleapis.com' }
     ]
   },
 
   css: [
     '@/assets/custom-icons.css',
-    'vue-wysiwyg/dist/vueWysiwyg.css'
   ],
 
   router: {
     middleware: ['auth']
   },
 
-  plugins: [
-    '~/plugins/VueWysiwyg.js'
-  ],
+  plugins: [],
 
-  server: {
-    port: 2323,
-    host: '0'
-  },
+  target: 'static',
 
   components: true,
 

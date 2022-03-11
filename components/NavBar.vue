@@ -23,6 +23,13 @@
               </template>
 
               <v-list dense color="primary">
+                <v-list-item to="/settings">
+                  <v-list-item-icon>
+                    <v-icon>settings</v-icon>
+                  </v-list-item-icon>
+                  <v-list-item-title>الاعدادات</v-list-item-title>
+                </v-list-item>
+
                 <v-list-item @click="$auth.logout()">
                   <v-list-item-icon>
                     <v-icon>mdi-logout</v-icon>

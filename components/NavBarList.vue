@@ -135,6 +135,39 @@ export default {
           to: '/courses/',
           show: true,
         },
+
+        {
+          title: 'الموزعين',
+          icon: 'mdi-sitemap',
+          to: '/distributors',
+          show: true,
+        },
+        {
+          title: 'الاساتذة',
+          icon: 'mdi-account-outline',
+          to: '/teachers',
+          show: true,
+        },
+        {
+          title: 'الطلاب',
+          icon: 'mdi-card-account-details-outline',
+          to: '/studnets',
+          show: true,
+        },
+        {
+          title: 'الاشعارات',
+          icon: 'notifications',
+          to: '/notifications',
+          show: true,
+        },
+        {
+          title: 'التقارير المالية',
+          icon: 'table_chart',
+          to: '/reports',
+          show: this.roleId === 1,
+        },
+      ],
+      dropdown: [
         {
           title: 'المكتبة',
           icon: 'mdi-book-outline',
@@ -157,38 +190,6 @@ export default {
           title: 'الخصومات',
           icon: 'mdi-sale',
           to: '/promo',
-          show: true,
-        },
-        {
-          title: 'الاشعارات',
-          icon: 'notifications',
-          to: '/notifications',
-          show: true,
-        },
-        {
-          title: 'التقارير المالية',
-          icon: 'table_chart',
-          to: '/reports',
-          show: this.roleId === 1,
-        },
-      ],
-      dropdown: [
-        {
-          title: 'الموزعين',
-          icon: 'mdi-sitemap',
-          to: '/distributors',
-          show: true,
-        },
-        {
-          title: 'الاساتذة',
-          icon: 'mdi-account-outline',
-          to: '/teachers',
-          show: true,
-        },
-        {
-          title: 'الطلاب',
-          icon: 'mdi-card-account-details-outline',
-          to: '/studnets',
           show: true,
         },
         {
