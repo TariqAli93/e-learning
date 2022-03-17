@@ -342,6 +342,7 @@ export default {
         query: {
           p: item.item.platformPriceTotal,
           r: item.item.remainingPrice,
+          t: item.item.totalPrice,
         },
       })
     },

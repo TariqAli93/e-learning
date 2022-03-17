@@ -328,7 +328,7 @@
             >
             </v-text-field>
 
-            <v-tooltip bottom transition="slide-y-transition" color="text">
+            <!-- <v-tooltip bottom transition="slide-y-transition" color="text">
               <template #activator="{ on, attrs }">
                 <v-btn
                   icon
@@ -342,7 +342,7 @@
                 </v-btn>
               </template>
               <span class="primary--text">اضافة طالب جديد</span>
-            </v-tooltip>
+            </v-tooltip> -->
           </div>
         </v-toolbar>
       </template>

@@ -55,7 +55,13 @@
           </v-col>
         </v-row>
 
-        <v-btn block color="success" class="primary--text" type="submit">
+        <v-btn
+          block
+          color="success"
+          class="primary--text"
+          type="submit"
+          :disabled="!settingsForm"
+        >
           حفظ المعلومات
         </v-btn>
       </v-form>
@@ -67,41 +73,43 @@ export default {
   data: () => ({
     setting: null,
     show: false,
+    settingsForm: false,
     rules: [(v) => !!v || 'لا يمكن ترك الحقل فارغ'],
   }),
   mounted() {
     this.initialData()
   },
   methods: {
-    initialData() {
-      this.$axios
-        .get('settings')
-        .then((res) => {
-          console.log(res.data[0])
-          this.setting = res.data[0]
-          this.show = true
-        })
-        .catch((err) => {
-          console.log(err)
-        })
+    async initialData() {
+      try {
+        const settings = await this.$axios.get('settings')
+        console.log(settings.data[0])
+        this.setting = settings.data[0]
+        this.show = true
+      } catch (error) {
+        console.error(error)
+      }
     },
-    saveData() {
-      this.$axios
-        .put(`setting/${this.setting.idSetting}`, this.setting)
-        .then((res) => {
-          console.log(res.data)
-          this.$toast.success('تم حفظ البيانات', {
-            duration: 3000,
-            position: 'top-center',
-          })
+
+    async saveData() {
+      try {
+        const save = await this.$axios.put(
+          `setting/${this.setting.idSetting}`,
+          this.setting
+        )
+        this.$toast.success('تم حفظ البيانات', {
+          duration: 3000,
+          position: 'top-center',
         })
-        .catch((err) => {
-          console.log(err)
-          this.$toast.error('لم يتم حفظ البيانات', {
-            duration: 3000,
-            position: 'top-center',
-          })
+
+        console.log(save.data)
+      } catch (error) {
+        console.error(error)
+        this.$toast.error('لم يتم حفظ البيانات', {
+          duration: 3000,
+          position: 'top-center',
         })
+      }
     },
   },
 }

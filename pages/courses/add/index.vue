@@ -141,6 +141,7 @@
             <v-col cols="12" sm="12" md="12" lg="12" xl="12">
               <v-textarea
                 name="courseDescription"
+                value="لا يوجد"
                 background-color="secondary"
                 color="text"
                 outlined

@@ -403,7 +403,7 @@
                     class="mr-2"
                     v-bind="attrs"
                     v-on="on"
-                    @click="$router.push('/courses')"
+                    @click="closeCoursePage"
                   >
                     <v-icon>mdi-arrow-left</v-icon>
                   </v-btn>
@@ -817,6 +817,10 @@ export default {
         console.log(error.response)
         this.$nuxt.$loading.finish()
       }
+    },
+
+    closeCoursePage() {
+      window.close()
     },
   },
 }

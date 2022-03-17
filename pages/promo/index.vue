@@ -286,6 +286,20 @@ export default {
           align: 'start',
         },
         {
+          text: 'المرحلة',
+          value: 'course.subject.class.className',
+          sortable: false,
+          width: 150,
+          align: 'start',
+        },
+        {
+          text: 'اسم الاستاذ',
+          value: 'user.userName',
+          sortable: false,
+          width: 150,
+          align: 'start',
+        },
+        {
           text: 'عدد المستفيدين',
           value: 'usedCount',
           sortable: false,

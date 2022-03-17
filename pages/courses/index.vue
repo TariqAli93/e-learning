@@ -58,6 +58,37 @@
         </v-data-table>
       </v-card>
     </v-dialog>
+
+    <v-dialog
+      v-model="commentsDialog"
+      transition="slide-y-transition"
+      max-width="750px"
+    >
+      <v-card color="secondary" class="shadow-1 radius-1 pa-10">
+        <v-toolbar color="primary" class="shadow-1 radius-1 mb-10">
+          <h4>التعليقات</h4>
+          <v-spacer />
+          <v-btn color="error" icon @click="commentsDialog = false">
+            <v-icon>close</v-icon>
+          </v-btn>
+        </v-toolbar>
+
+        <v-data-table
+          :headers="commentsHeaders"
+          :items.sync="comments"
+          :items-per-page="15"
+          group-by="videoTitle"
+          class="pa-5 secondary courses__table"
+        >
+          <template #[`item.actions`]="{ item }">
+            <v-btn icon color="warning" @click="deleteComment(item)">
+              <v-icon>delete</v-icon>
+            </v-btn>
+          </template>
+        </v-data-table>
+      </v-card>
+    </v-dialog>
+
     <!-- course table -->
     <v-data-table
       :headers="headers"
@@ -135,13 +166,17 @@
           <v-icon>delete</v-icon>
         </v-btn>
 
-        <v-btn
+        <!-- <v-btn
           icon
           color="info"
           @click.prevent="getDistributors(item.idCourse)"
         >
           <v-icon>people</v-icon>
         </v-btn>
+
+        <v-btn icon color="success" @click.prevent="getComments(item)">
+          <v-icon>mark_chat_unread</v-icon>
+        </v-btn> -->
       </template>
     </v-data-table>
     <!-- course table -->
@@ -156,6 +191,32 @@ export default {
       search: '',
       dates: [],
       datesMenu: false,
+
+      commentsDialog: false,
+      comments: [],
+      commentsHeaders: [
+        {
+          text: '#',
+          value: 'idVideoComment',
+        },
+        {
+          text: 'الاسم',
+          value: 'user.userName',
+        },
+        {
+          text: 'التعليق',
+          value: 'userComment',
+        },
+        {
+          text: 'التاريخ',
+          value: 'createdAt',
+        },
+        {
+          text: 'الاجرائات',
+          value: 'actions',
+        },
+      ],
+
       distributorsDialog: false,
       distributors: [],
       distributorsHeaders: [
@@ -211,8 +272,9 @@ export default {
         { text: 'سعر الكورس', value: 'coursePrice', sortable: false },
         { text: 'سعر المنصة', value: 'platformPrice', sortable: false },
         { text: 'المادة', value: 'subject.subjectName', sortable: false },
+        { text: 'الصف', value: 'subject.class.className', sortable: false },
         { text: 'التاريخ', value: 'createdAt', sortable: false },
-        { text: 'الاجرائات', value: 'actions', sortable: false, width: 200 },
+        { text: 'الاجرائات', value: 'actions', sortable: false, width: 300 },
       ],
 
       courses: [],
@@ -243,24 +305,35 @@ export default {
 
   head() {
     return {
-      title: 'الكورسات'
+      title: 'الكورسات',
     }
   },
 
   methods: {
-    GetCourses() {
-      this.$axios
-        .get('courses')
-        .then((res) => {
-          this.courses = res.data
+    async GetCourses() {
+      try {
+        const courses = await this.$axios.get('courses')
+        console.log(courses.data)
+        this.courses = courses.data.map((course) => {
+          return {
+            ...course,
+            createdAt: course.createdAt.split('T')[0],
+          }
         })
-        .catch((err) => {
-          console.log(err)
-        })
+      } catch (error) {
+        console.log(error)
+      }
     },
 
     OpenCourse(item) {
-      this.$router.push({ path: `/courses/${item.idCourse}/` })
+      const width = window.innerWidth
+      const height = window.innerHeight
+      window.open(
+        `/courses/${item.idCourse}/`,
+        '_blank',
+        `location=yes,height=${height},width=${width},scrollbars=yes,status=yes`
+      )
+      // this.$router.push({ path: `/courses/${item.idCourse}/` })
     },
 
     deleteCourse(item) {
@@ -297,6 +370,16 @@ export default {
         })
         this.$nuxt.$loading.finish()
       }
+    },
+
+    getComments(item) {
+      console.log('%cindex.vue line:361 item', 'color: #007acc;', item)
+      this.comments = []
+      this.commentsDialog = true
+    },
+
+    deleteComment(id) {
+      console.log('%cindex.vue line:385 id', 'color: #007acc;', id)
     },
 
     async changeStatus(item, status) {
