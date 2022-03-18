@@ -106,15 +106,15 @@
             </template>
 
             <v-list nav dense color="primary">
-              <v-list-item class="text--text" @click="multiChangeStatus(1)"
+              <v-list-item class="text--text" @click="changeMultiStatus(1)"
                 >Pending</v-list-item
               >
               <v-divider class="secondary mb-2 mt-2" />
-              <v-list-item class="text--text" @click="multiChangeStatus(2)"
+              <v-list-item class="text--text" @click="changeMultiStatus(2)"
                 >Enrolled</v-list-item
               >
               <v-divider class="secondary mb-2 mt-2" />
-              <v-list-item class="text--text" @click="multiChangeStatus(3)"
+              <v-list-item class="text--text" @click="changeMultiStatus(3)"
                 >Active+</v-list-item
               >
             </v-list>
@@ -346,12 +346,18 @@ export default {
 
     async changeMultiStatus(status) {
       try {
-        const change = await this.$axios.put(`studentCourse`, {
+        const change = await this.$axios.put(`manyStudentStatus`, {
           studentIds: this.selectedStudents,
           statusId: status,
         })
 
         console.log(change.data)
+
+        this.$toast.success('تم تغير الحالة بنجاح', {
+          duration: 3000,
+          position: 'top-center',
+        })
+
         this.getDetails()
       } catch (error) {
         console.log(

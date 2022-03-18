@@ -62,7 +62,7 @@
     <v-dialog
       v-model="commentsDialog"
       transition="slide-y-transition"
-      max-width="750px"
+      max-width="1300px"
     >
       <v-card color="secondary" class="shadow-1 radius-1 pa-10">
         <v-toolbar color="primary" class="shadow-1 radius-1 mb-10">
@@ -73,19 +73,70 @@
           </v-btn>
         </v-toolbar>
 
-        <v-data-table
-          :headers="commentsHeaders"
-          :items.sync="comments"
-          :items-per-page="15"
-          group-by="videoTitle"
-          class="pa-5 secondary courses__table"
+        <div v-if="videoCourseCount > 0">
+          <v-row
+            v-for="comment in comments"
+            :key="comment.comments.idVideoComment"
+            class="primary shadow-1 radius-1"
+            justify="center"
+          >
+            <v-col cols="12">
+              <v-sheet color="primary" class="shadow-1 radius-1 pa-5 mb-2 mt-2">
+                {{ comment.videoTitle }}
+              </v-sheet>
+            </v-col>
+
+            <v-col
+              cols="12"
+              sm="12"
+              md="4"
+              lg="4"
+              xl="4"
+              v-for="content in comment.comments"
+              :key="content.idVideoComment"
+            >
+              <v-card color="secondary" class="shadow-1 radius-1">
+                <div class="comments">
+
+                  <div class="comments__header">
+                    <div class="comments__header__date primary pa-2 mb-2 shadow-1 radius-1">
+                      {{ content.createdAt.split("T")[0] }}
+                    </div><!-- createdAr -->
+
+
+                    <div class="comments__header__user">
+                      <v-icon>person</v-icon>
+
+                      <div class="comments__header__user__name">
+                        {{ content.createdBy }}
+                      </div>
+                    </div><!-- user -->
+                  </div><!-- header -->
+
+                  <div class="comments__divider"></div>
+
+                  <div class="comments__body">
+                    <div class="comments__body__content">
+                      {{ content.userComment }}
+                    </div><!-- content -->
+                  </div><!-- body -->
+
+                </div><!-- comments -->
+              </v-card>
+            </v-col>
+          </v-row>
+        </div>
+
+        <v-alert
+          v-else
+          border="left"
+          color="warning"
+          elevation="2"
+          light
+          class="shadow-1 radius-1"
         >
-          <template #[`item.actions`]="{ item }">
-            <v-btn icon color="warning" @click="deleteComment(item)">
-              <v-icon>delete</v-icon>
-            </v-btn>
-          </template>
-        </v-data-table>
+          <h1>لا يوجد تعليقات</h1>
+        </v-alert>
       </v-card>
     </v-dialog>
 
@@ -166,7 +217,7 @@
           <v-icon>delete</v-icon>
         </v-btn>
 
-        <!-- <v-btn
+        <v-btn
           icon
           color="info"
           @click.prevent="getDistributors(item.idCourse)"
@@ -176,7 +227,7 @@
 
         <v-btn icon color="success" @click.prevent="getComments(item)">
           <v-icon>mark_chat_unread</v-icon>
-        </v-btn> -->
+        </v-btn>
       </template>
     </v-data-table>
     <!-- course table -->
@@ -194,29 +245,7 @@ export default {
 
       commentsDialog: false,
       comments: [],
-      commentsHeaders: [
-        {
-          text: '#',
-          value: 'idVideoComment',
-        },
-        {
-          text: 'الاسم',
-          value: 'user.userName',
-        },
-        {
-          text: 'التعليق',
-          value: 'userComment',
-        },
-        {
-          text: 'التاريخ',
-          value: 'createdAt',
-        },
-        {
-          text: 'الاجرائات',
-          value: 'actions',
-        },
-      ],
-
+      videoCourseCount: [],
       distributorsDialog: false,
       distributors: [],
       distributorsHeaders: [
@@ -374,7 +403,14 @@ export default {
 
     getComments(item) {
       console.log('%cindex.vue line:361 item', 'color: #007acc;', item)
-      this.comments = []
+      this.videoCourseCount = item.CourseVideo.length
+
+      this.comments = item.CourseVideo.map((videos) => {
+        return {
+          videoTitle: videos.videoTitle,
+          comments: videos.VideoComment,
+        }
+      })
       this.commentsDialog = true
     },
 
@@ -451,6 +487,65 @@ export default {
     visibility: visible;
     opacity: 1;
     display: block;
+  }
+}
+
+.comments {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  cursor: pointer;
+  padding: .30em 1em;
+
+  &__divider {
+    width: 100%;
+    height: 1px;
+    background-color: #f3f3f305;
+    margin: 0.5em 0;
+  }
+
+  &__header {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+
+    &__user {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 1.2em;
+    }
+
+    &__date {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      font-size: .67em;
+    }
+  }
+
+  &__body {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    word-wrap: normal;
+
+    &__content {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      font-size: .88em;
+      word-break: break-all;
+      line-height: 1.5;
+    }
   }
 }
 </style>
